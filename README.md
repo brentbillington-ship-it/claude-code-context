@@ -34,6 +34,7 @@ Or add a `CLAUDE.md` to your project that imports it by reference.
 claude-code-context/
 ├── CLAUDE_CODE_STANDING_RULES.md   # Global rules — fetch at session start
 ├── skills/                          # Shared skill .md files
+│   ├── canvassing-map-console-seed.md
 │   ├── pdf-extract.md
 │   └── scraper.md
 ├── projects/                        # Per-repo CLAUDE.md templates
