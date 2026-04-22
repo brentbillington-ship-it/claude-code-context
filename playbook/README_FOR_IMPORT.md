@@ -43,7 +43,7 @@ playbook/
 ├── CHECKPOINT.md                               Phase-by-phase progress log
 ├── MORNING_BRIEF.md                            Start here — 5-minute read
 ├── README_FOR_IMPORT.md                        This file
-├── research/                                   Wave 1 scout reports (8)
+├── research/                                   Wave 1 scout reports (8) + viz/maps references
 │   ├── reddit.md
 │   ├── github.md
 │   ├── anthropic.md
@@ -52,6 +52,7 @@ playbook/
 │   ├── freelancer.md
 │   ├── anti-patterns.md
 │   ├── tools.md
+│   ├── viz-and-maps-references.md              Canonical source index for the two agents below
 │   └── EXPANSION_QUEUE.md
 ├── synthesis/                                  Cross-source synthesis (4)
 │   ├── PATTERNS.md
@@ -62,7 +63,7 @@ playbook/
 │   ├── hooks/                                  7 bash scripts + example settings
 │   ├── skills/                                 6 SKILL.md scaffolds
 │   ├── claude-md/                              6 CLAUDE.md project templates
-│   └── agents/                                 10 reusable agent templates
+│   └── agents/                                 12 reusable agent templates (incl. data-viz + maps reviewers)
 ├── catalogs/                                   Reference catalogs (4)
 │   ├── MCP_CATALOG.md
 │   ├── PLUGIN_CATALOG.md
@@ -78,7 +79,8 @@ playbook/
     ├── 07-CLAUDE_CODE_STANDING_RULES-anti-patterns.proposal.md
     ├── 08-CLAUDE_CODE_STANDING_RULES-model-routing.proposal.md
     ├── 09-AGENT_MANAGER-subagent-rules.proposal.md
-    └── 10-CLAUDE_CODE_STANDING_RULES-local-md.proposal.md
+    ├── 10-CLAUDE_CODE_STANDING_RULES-local-md.proposal.md
+    └── 11-data-viz-and-maps-agents.proposal.md
 ```
 
 ---
@@ -98,7 +100,7 @@ These assumptions are specific to the original account; swap them out for your o
 ## Known gaps (from MORNING_BRIEF honest assessment)
 
 - **Wave 2 repo deep-dives were skipped** when agent quota hit. Scout reports pre-paraphrased patterns from the top 15 repos; synthesis proceeded without. `research/EXPANSION_QUEUE.md` has the queued targets if you want to run Wave 2 later.
-- **No data-visualization agent.** `research-subagent` covers research breadth, `code-reviewer` covers implementation review, `browser-qa-generic` covers visual output — but there's no dedicated viz-review agent. Reasonable addition if your new account does a lot of charts or maps.
+- **Data-viz and maps agents added post-playbook.** `data-viz-reviewer.md` (charts / dashboards / business analytics) and `maps-tooling-reviewer.md` (map apps / regional analysis / geo pipelines) were added after the main run to close a gap. Research scouts timed out three times on those topics; the agents were written from domain knowledge with a curated references file (`research/viz-and-maps-references.md`) backing every claim. Deepening the research later is easy.
 - **Auto-compact stance contested.** Community says disable; Anthropic says leave on. Flagged in RECOMMENDATIONS.md #12. Test on one project before adopting globally.
 
 ---
