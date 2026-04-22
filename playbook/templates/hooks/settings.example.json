@@ -1,0 +1,52 @@
+{
+  "_comment": "Example settings.json wiring for the six hook scripts. Place at .claude/settings.json or ~/.claude/settings.json. Replace $CCC with the absolute path to your claude-code-context checkout.",
+
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Write|Edit|MultiEdit",
+        "hooks": [
+          { "type": "command", "command": "$CCC/playbook/templates/hooks/secret-scan-preedit.sh" },
+          { "type": "command", "command": "$CCC/playbook/templates/hooks/ruff-pretooluse.sh" }
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          { "type": "command", "command": "$CCC/playbook/templates/hooks/rm-rf-guard.sh" }
+        ]
+      }
+    ],
+
+    "Stop": [
+      {
+        "hooks": [
+          { "type": "command", "command": "$CCC/playbook/templates/hooks/checkpoint-autosave.sh" },
+          { "type": "command", "command": "$CCC/playbook/templates/hooks/desktop-notify-on-complete.sh" }
+        ]
+      }
+    ],
+
+    "SubagentStop": [
+      {
+        "hooks": [
+          { "type": "command", "command": "$CCC/playbook/templates/hooks/subagent-stop-queue-next.sh" }
+        ]
+      }
+    ],
+
+    "Notification": [
+      {
+        "hooks": [
+          { "type": "command", "command": "$CCC/playbook/templates/hooks/desktop-notify-on-blocked.sh" }
+        ]
+      }
+    ]
+  },
+
+  "_anti_patterns_honored": [
+    "ANTI_PATTERNS.md A1 — no PostToolUse hook invokes Claude",
+    "ANTI_PATTERNS.md A5 — rm-rf guard even in non-YOLO sessions",
+    "ANTI_PATTERNS.md A11 — hooks redirect stderr; test with --debug"
+  ]
+}
