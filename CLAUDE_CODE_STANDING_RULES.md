@@ -154,6 +154,47 @@ Only if github-mcp-server is unavailable:
 
 ---
 
+## Sandbox / Network — github.io Block Fix
+
+### Symptom
+
+Playwright navigating a live `*.github.io` URL fails with `403 host_not_allowed` or `ERR_INVALID_AUTH_CREDENTIALS`. Claude Code's sandbox proxy blocks the request before it reaches GitHub Pages. This also affects `script.google.com`, `sheets.googleapis.com`, and any other external host not in the allowlist.
+
+Canvassing-Map CLAUDE.md Rule 1 documents this symptom — the settings fix below is the remedy.
+
+### Fix
+
+Create `.claude/settings.local.json` in the project root:
+
+```json
+{
+  "sandbox": {
+    "network": {
+      "allowedDomains": [
+        "*.github.io",
+        "github.com",
+        "api.github.com",
+        "raw.githubusercontent.com",
+        "codeload.github.com",
+        "*.googleapis.com",
+        "script.google.com",
+        "sheets.googleapis.com",
+        "maps.dcad.org"
+      ],
+      "allowLocalBinding": true
+    }
+  }
+}
+```
+
+This baseline list covers all active projects. **Add project-specific domains per-repo** (e.g., a third-party tile server or data API) — don't put one-off domains in the global list.
+
+### Gitignore Rule
+
+Add `.claude/settings.local.json` to the repo's `.gitignore`. This file is machine-local and must never be committed.
+
+---
+
 ## Python Stack
 
 | Tool | Rule |
@@ -210,6 +251,16 @@ Add to Claude Code settings — catches Python issues before they compound:
 - GUI scripts → `.pyw` | Pipeline modules → `.py`
 - Apps Script: equality checks require `String()` coercion on both sides
 
+### Version Numbering Convention
+
+Applies to any repo using `APP_VERSION` (Canvassing-Map, Signs Map, other web apps). Three tiers — pick the smallest that honestly fits:
+
+- **Whole number bump** (`7.0` → `8.0`): Very significant app changes and additions — major overhaul, new subsystem, architectural rewrite, or a release worth announcing.
+- **Decimal bump** (`7.0` → `7.1`): Significant bug fixes or new features. Release worth end-to-end testing.
+- **Letter suffix** (`7.0` → `7.0a` → `7.0b`): Single-change hotfixes and very minor adjustments (one-line edits, copy tweaks, emoji strips, style nudges). Lowercase, sequential.
+
+Every bump — letter, decimal, or whole — requires updating **all** `?v=` cache busters in `index.html` to match, or browsers serve stale assets.
+
 ---
 
 ## CLAUDE.md Rules (for project-level files)
@@ -230,6 +281,87 @@ Add to Claude Code settings — catches Python issues before they compound:
 - Flag problems before they happen
 - Never theorize when you can read the actual file
 - If something seems wrong or risky, say so before proceeding
+
+---
+
+## Debugging Discipline — Non-Negotiable
+
+These rules exist because a single map-accuracy debugging session burned
+five shipped versions without fixing the bug, lost the user's trust, and
+made the tracker worse. Re-read before debugging any visual or
+user-visible bug.
+
+### D1. User observation outranks any tool query
+
+If the user says "this looks wrong" and a tool (reverse-geocoder,
+metadata lookup, API response) says "it's right," the user is right.
+Load the exact view they're looking at and compare. Do not reply
+"the data says it's correct."
+
+### D2. Visual features require visual verification before "shipped"
+
+A fix touching anything the user can see on screen — markers, charts,
+layout, colors, tooltips, map placement — is not "shipped" until:
+  (a) The output is rendered in the live preview at the specific
+      scenario that was broken
+  (b) Compared against a ground-truth source (Google Maps for
+      addresses, the user's screenshot for UI, etc.)
+  (c) Evidence of (a) + (b) is recorded (screenshot, measurement,
+      or the comparison itself)
+
+Code-path tests ("the function returns the expected value") do not
+count. They verify the function, not the user-visible outcome.
+
+### D3. Observation is step 1. Theory is step 2
+
+If caught writing a 2-paragraph theory about the cause of a visual
+bug before doing a 30-second visual check, stop. Render it, look at
+it, screenshot it, then theorize. Theory without observation is
+gaslighting the user with plausible-sounding guesses.
+
+### D4. One fix per commit when debugging a specific symptom
+
+While chasing a specific bug report, releases are narrow and each
+verified before the next. Bundling the fix with unrelated work makes
+it impossible for anyone — including the model — to say whether the
+fix worked. The user cannot bisect a release that changes 12 things.
+
+### D5. Two user pushbacks on the same symptom = read-only mode
+
+After the second "still wrong" from the user on the same symptom,
+no more commits until the root cause is identified and a single-commit
+fix is proposed with evidence. Shipping more "maybe-fixes" dilutes
+trust and compounds drift.
+
+### D6. Build the regression set, keep running it
+
+When phase-0 diagnosis produces test cases, those cases are the
+regression set. Re-run after every change that could affect them.
+Any case that passed a code-path test but failed a visual test means
+the visual test is the one that counts going forward.
+
+### D7. For mapping specifically
+
+Parcel centroid ≠ rooftop. Legal parcel polygons often include
+driveways, setbacks, and deep back yards; the geometric center often
+lands on lawn, not on the house. If a jurisdiction publishes
+aerial-aligned parcel data (Coppell does, via the sign-map repo's
+`parcels.js`), that is the canonical source and deviating from it
+requires explicit justification *and* visual verification.
+
+For multi-match SITEADDRESS lookups (condos, duplexes, common-area
+HOA parcels sharing a street address), filter owner names —
+"HOMEOWNERS", "ASSOCIATION", "HOA", "COMMON AREA" parcels are
+generally not where the residents live.
+
+### D8. Ground-truth scraping via Playwright — no paid APIs
+
+When a user wants address-to-coord ground truth and there is no paid
+geocoder key, use Playwright (msedge channel per the playwright-via-Edge
+rule above) to drive Google Maps or the DCAD property viewer. Extract
+the coord from the URL after the site resolves the address. This is
+the canonical pattern for the "compare stored coord vs. real location"
+loop on this account.
 
 ---
 
