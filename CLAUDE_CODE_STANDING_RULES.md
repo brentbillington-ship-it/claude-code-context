@@ -284,6 +284,76 @@ Every bump — letter, decimal, or whole — requires updating **all** `?v=` cac
 
 ---
 
+## Research Methodology — Non-Negotiable
+
+These rules exist because the May 5, 2026 Gala Holdings Tracker
+research run produced 5+ compromised deliverables — including an
+invented Vyzer pricing tier and a UI aesthetics review where no agent
+ever rendered or saw a competitor's UI. The whole run had to be
+thrown out and rebuilt as V2. Re-read before delegating any
+research task that involves competitor UIs, pricing, or visual claims.
+
+### R1. Visual claims require visual rendering
+
+If a deliverable will assert anything about a vendor's UI, dashboard
+layout, chart design, color usage, or visual pattern, the agent
+MUST render the actual page through Playwright (msedge channel —
+see Playwright section), save a screenshot locally to a
+`screenshots/` directory, and Read the screenshot file back into
+context so the agent actually sees the rendered output. WebFetch
+returns text — it cannot see UI. On JS-heavy marketing pages it
+often returns near-empty content the agent will fill with training-
+data guesses dressed as findings.
+
+### R2. Pricing facts come from vendor own pages, not third-party blogs
+
+Every quoted dollar figure in a research deliverable must come from:
+  (a) the vendor's own pricing page, rendered through Playwright,
+      screenshot saved to `screenshots/pricing/<vendor>.png`, OR
+  (b) be tagged "request-quote, no public price" with no
+      invented number, OR
+  (c) be cross-verified against a second independent source AND
+      the source disagreement noted explicitly in the deliverable
+
+When sources disagree, trust the vendor's own page over any third
+party. The Vyzer failure happened because the agent saw both the
+vendor's help-center page AND a third-party blog and picked the
+blog. Never again.
+
+### R3. Pre-flight gate research runs with a Playwright smoke test
+
+Before spawning multiple research agents, run a smoke test that
+launches Playwright (msedge), navigates to a known URL, takes a
+screenshot, and reports OK. If smoke fails, halt and notify the
+user. Don't burn budget spawning agents whose tool dependency is
+broken.
+
+### R4. Per-agent verification gate
+
+The first vendor page each research agent visits must successfully
+render and screenshot before the agent continues to others. If
+Playwright fails on the first vendor, document the failure and
+notify — don't keep going on agents whose entire methodology
+depends on rendering they can't do.
+
+### R5. Sources contradict — document and trust the primary
+
+When a third-party article and a vendor's own published page give
+different numbers (pricing, feature gates, tier limits), the
+deliverable explicitly notes the disagreement and uses the
+vendor's own page. Do not pick silently.
+
+### R6. Don't forbid the only methodology that works
+
+When writing a research CCP, do not include constraints like
+"no image downloads" or "no local screenshot saves" if the
+research goal requires visual inspection. The original Gala CCP
+forbade screenshot capture; the Aesthetics agent had no fallback
+and produced text-vibe inferences. The CCP author owns this
+failure as much as the agent.
+
+---
+
 ## Debugging Discipline — Non-Negotiable
 
 These rules exist because a single map-accuracy debugging session burned
