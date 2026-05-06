@@ -13,6 +13,13 @@
 | `AGENTS_COLOR_TRACE.md` | **ACTIVE** | 2026-04-13 | 2026-04-13 | Marker color/shape/auto-set trace debugging | All color bugs resolved and stable for 2+ weeks |
 | `AGENTS_DEPLOY_VERIFY.md` | **ACTIVE** | 2026-04-13 | 2026-04-13 | Post-push deploy verification | Project archived or replaced by CI pipeline |
 | `AGENTS_PLAYWRIGHT_QA.md` | **RETIRED** | 2026-04-13 | 2026-04-13 | *(replaced by VISUAL_QA + BROWSER_BOOTSTRAP)* | — |
+| `agents/family-office-tracker/MANAGER.md` | **ACTIVE** | 2026-05-05 | 2026-05-05 | Orchestrator for family-office tracker research run | Research deliverables accepted by Brent and v1 build complete |
+| `agents/family-office-tracker/PRICING.md` | **ACTIVE** | 2026-05-05 | 2026-05-05 | Family-office tracker pricing & positioning research | Same as MANAGER |
+| `agents/family-office-tracker/AESTHETICS.md` | **ACTIVE** | 2026-05-05 | 2026-05-05 | Family-office tracker UI/aesthetic competitor review | Same as MANAGER |
+| `agents/family-office-tracker/DATAVIZ.md` | **ACTIVE** | 2026-05-05 | 2026-05-05 | Family-office tracker data viz methodology | Same as MANAGER |
+| `agents/family-office-tracker/FEATURES.md` | **ACTIVE** | 2026-05-05 | 2026-05-05 | Family-office tracker feature competitive matrix | Same as MANAGER |
+| `agents/family-office-tracker/FINANCE.md` | **ACTIVE** | 2026-05-05 | 2026-05-05 | Family-office tracker finance methodology + spreadsheet audit | Same as MANAGER |
+| `agents/family-office-tracker/SYNTHESIS.md` | **ACTIVE** | 2026-05-05 | 2026-05-05 | Family-office tracker research synthesis + style guide draft | Same as MANAGER |
 
 ### Status Values
 - **ACTIVE** — Available for invocation in any CC session.
@@ -120,3 +127,4 @@ When invoked with `audit`, the manager:
 | 2026-04-13 | CREATE | AGENTS_COLOR_TRACE.md | Marker color/shape debugging trace |
 | 2026-04-13 | CREATE | AGENTS_DEPLOY_VERIFY.md | Post-push deploy smoke test |
 | 2026-04-13 | CREATE | AGENT_MANAGER.md | Meta-agent for lifecycle governance |
+| 2026-05-05 | CREATE | agents/family-office-tracker/* (7 agents) | Research orchestrator + 5 sub-agents + synthesis for Gala Holdings Tracker engagement; reusable pattern for future family-office work |
