@@ -71,6 +71,7 @@ Enumerate every user task and run it end-to-end against the live preview.
 - Dark mode automatic switch via OS toggle
 - Pull-to-refresh / manual refresh
 - Keyboard navigation + Esc to close
+- **Empty-state create-paths.** For every "list" / "filtered list" / "category" / "smart folder" / "tag" / "notebook" view, verify the user can CREATE a first entry from inside that view. An empty-state that shows the rule but offers no CTA to populate it is a critical-or-major finding (not a minor). This was missed twice in BB-Notes E3 / E3.0.1 reviews — Brent caught it in dogfood: smart folder for "Raw ideas" rendered "No pages match this rule yet." with no "+ New page" button. The rubric: every empty-state must answer "how do I make this not empty?" with an in-view affordance, not by sending the user back to a different surface.
 
 ### Lens 3 — Research gap / persona
 

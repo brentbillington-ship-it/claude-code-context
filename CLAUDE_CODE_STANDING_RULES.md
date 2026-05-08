@@ -472,6 +472,14 @@ as-shipped artifact, not the planned spec.
   AND laptop width — never just one), light + dark, with realistic
   data populated. Read each screenshot back per R1.
 
+  **Mandatory check: empty-state create-paths.** For every list /
+  filtered list / category / smart folder / tag view, the empty
+  state must include a CTA that creates the first entry from
+  within that view. An empty state that explains the rule but
+  offers no in-view affordance to populate it is a critical-or-major
+  finding. This is the most common review-miss pattern (BB-Notes
+  E3/E3.0.1 missed it twice; user caught in dogfood).
+
 - **QA lens** — enumerate every user task end-to-end (auth →
   navigate → input → success path → error path). Pass / fail per
   task with evidence. Code-path tests do not count per D2.
