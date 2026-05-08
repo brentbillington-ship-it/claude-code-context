@@ -435,6 +435,85 @@ loop on this account.
 
 ---
 
+## Senior Review Discipline — Non-Negotiable
+
+These rules exist because the May 7, 2026 BB-Notes v2 ship produced a
+polished-looking but barren product: double energy widget on the home
+view, mobile-first design floating in dead space on a 1920px monitor,
+five hard-coded "feelings" the researcher guessed at, no notebook
+hierarchy, no calendar, no desktop layout. None of these were caught
+because the implementer was the only agent in the loop. Brent had to
+catch them in dogfood. Re-read before declaring any non-trivial
+product work shipped.
+
+### S1. Non-minor work requires a senior review pass before shipping
+
+A change is **non-minor** if any of these are true:
+- Touches the user-visible UI in more than one place
+- Adds or modifies a feature (vs. fixing a known bug)
+- Crosses 50+ net lines of changed code
+- Spans more than one file in `docs/` / `src/` / equivalent
+- Is the deliverable for a session, not a step inside one
+
+Non-minor work runs through the senior-review pass before being
+declared done. A self-prescribed "focused 5 polish" by the implementer
+does not count as a review.
+
+### S2. The senior-review pass has three lenses
+
+A senior-review pass produces one document per lens, severity-tagged
+(critical / major / minor / cosmetic). All three lenses run on the
+as-shipped artifact, not the planned spec.
+
+- **UIX lens** — fresh-eyes walkthrough of every surface, scored
+  against named references (Linear, Things, OneNote, Notion, Notability,
+  Apple Notes, Bear, etc., depending on the genre). Playwright
+  screenshots at the actual viewports the user uses (mobile width
+  AND laptop width — never just one), light + dark, with realistic
+  data populated. Read each screenshot back per R1.
+
+- **QA lens** — enumerate every user task end-to-end (auth →
+  navigate → input → success path → error path). Pass / fail per
+  task with evidence. Code-path tests do not count per D2.
+
+- **Research-gap / persona lens** — re-walk every locked decision
+  from the original research against the user's CONTEXT.md and
+  any feedback memory accumulated since. Surface decisions that
+  were correct at lock-time but are wrong now. Surface
+  hard-coded values the researcher guessed at that should be
+  user-curated (BB-Notes feelings list is the canonical example).
+
+### S3. Senior-review agent is dispatched, not the implementer's self-review
+
+The implementer is the worst critic of their own work — they ship
+against the spec, not against the user's experience. Use a separate
+agent for the review pass (subagent or a fresh session). The
+implementer's role in the review is to answer questions, not to
+generate findings.
+
+### S4. Three "researcher's guess that doesn't fit" findings = research-gap audit triggers
+
+If the senior review finds three or more locked decisions that no
+longer fit, treat the entire research baseline as suspect and
+trigger a research-gap audit before any v-next planning. Do not
+ship more polish against an obsolete baseline.
+
+### S5. The review document is the v-next spec source
+
+V-next planning starts from the review document's findings list,
+not from the implementer's notes or the user's most recent
+complaint. The review's prioritization is the prioritization
+unless the user overrides specific items.
+
+### S6. Senior-review agent definition
+
+The senior-reviewer agent is `superpowers:senior-product-review`
+(see `agents/senior-product-review.md` for the playbook). It runs
+the three lenses above. Invoke after a non-minor change is
+implementer-complete and before the user is asked to test.
+
+---
+
 ## Active Projects
 
 | Project | Repo | Notes |
