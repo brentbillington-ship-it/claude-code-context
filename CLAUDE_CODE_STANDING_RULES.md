@@ -480,6 +480,23 @@ as-shipped artifact, not the planned spec.
   finding. This is the most common review-miss pattern (BB-Notes
   E3/E3.0.1 missed it twice; user caught in dogfood).
 
+  **Mandatory check: feature-depth comparison against named
+  references.** Verifying that a feature *exists* is not sufficient.
+  For each feature surface (editor / capture / nav / search / etc.),
+  enumerate the equivalent feature inventory from at least 3 named
+  reference apps in the genre, and produce a coverage grid. A feature
+  that ships with materially less depth than the references is a
+  **major finding** even if the basic version "works." Specifically:
+  the editor lens must enumerate Bold / Italic / Underline /
+  Strikethrough / Headings (which levels) / Bullet / Numbered /
+  Checklist / Indent / Outdent / Quote / Code (inline + block) /
+  Link / Highlight / Color / Tables / Images / Keyboard shortcuts
+  count, and any reference-app feature missing or visibly weaker
+  in BB-Notes is a flagged gap. BB-Notes E3.1 missed this entirely:
+  shipped a raw markdown textarea labeled "Edit," reviewer passed
+  it as "feature exists," user caught the depth gap in dogfood.
+  Same failure class as the empty-state-create-path miss.
+
 - **QA lens** — enumerate every user task end-to-end (auth →
   navigate → input → success path → error path). Pass / fail per
   task with evidence. Code-path tests do not count per D2.
