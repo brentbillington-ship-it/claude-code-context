@@ -1,0 +1,6 @@
+# claude-code-context/.gitignore
+# Personal/local overrides
+.claude/settings.local.json
+
+# Binary archives — playbook snapshots are unzipped in-tree; the .zip is redundant
+*.zip

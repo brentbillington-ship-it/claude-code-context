@@ -1,0 +1,87 @@
+#!/usr/bin/env bash
+# claude-code-context/.githooks/pre-commit
+#
+# Enforces AGENT_MANAGER.md Lifecycle Rules: any commit that adds or modifies
+# an agent playbook file MUST also modify AGENT_MANAGER.md (registry table or
+# changelog row).
+#
+# Bypass with intent: `git commit --no-verify` or `CCC_SKIP_AGENT_HOOK=1 git commit`.
+# The bypass should appear in the commit message body as an explicit reason.
+
+set -euo pipefail
+
+if [[ "${CCC_SKIP_AGENT_HOOK:-}" == "1" ]]; then
+  echo "[pre-commit] CCC_SKIP_AGENT_HOOK=1 — skipping agent-registry enforcement." >&2
+  exit 0
+fi
+
+# Patterns the hook treats as "agent playbook files".
+agent_globs=(
+  'AGENTS_*.md'
+  'agents/'           # any path starting with agents/
+  '.claude/agents/'   # modern convention, future-proofing
+)
+
+manager_file='AGENT_MANAGER.md'
+
+# Files staged for commit (added, modified, renamed, deleted).
+staged=$(git diff --cached --name-only --diff-filter=ACMRD)
+
+# Find any staged agent file.
+agent_hits=()
+while IFS= read -r f; do
+  [[ -z "$f" ]] && continue
+  for pat in "${agent_globs[@]}"; do
+    case "$f" in
+      $pat*) agent_hits+=("$f"); break ;;
+      $pat)  agent_hits+=("$f"); break ;;
+    esac
+  done
+done <<<"$staged"
+
+if [[ ${#agent_hits[@]} -eq 0 ]]; then
+  exit 0
+fi
+
+# An agent file is staged. Require AGENT_MANAGER.md to also be staged.
+if ! grep -qxF "$manager_file" <<<"$staged"; then
+  cat >&2 <<EOF
+
+[pre-commit] BLOCKED — AGENT_MANAGER.md drift guard
+
+You are committing changes to one or more agent playbook files:
+$(printf '  - %s\n' "${agent_hits[@]}")
+
+But $manager_file is NOT in the staged change set.
+
+The Lifecycle Rules in $manager_file require every CREATE / UPDATE /
+RETIRE / MERGE of an agent file to update both the registry table and
+the changelog at the bottom of $manager_file in the SAME commit.
+
+To proceed, EITHER:
+  1. Update $manager_file (registry row + changelog entry) and re-stage:
+       git add $manager_file
+       git commit
+  2. If this commit genuinely does not warrant a registry change (e.g., a
+     typo fix in an agent file), bypass with explicit intent:
+       CCC_SKIP_AGENT_HOOK=1 git commit
+     and explain the bypass in the commit message body.
+
+EOF
+  exit 1
+fi
+
+# AGENT_MANAGER.md IS staged — soft-check that the diff isn't trivial whitespace.
+manager_diff_lines=$(git diff --cached --numstat -- "$manager_file" | awk '{print $1+$2}')
+if [[ "${manager_diff_lines:-0}" -lt 2 ]]; then
+  cat >&2 <<EOF
+
+[pre-commit] WARNING — $manager_file diff is suspiciously small ($manager_diff_lines lines).
+A genuine registry update typically touches the registry table AND adds a
+changelog row (>=2 lines). If you are only fixing whitespace, set
+CCC_SKIP_AGENT_HOOK=1 to bypass. Continuing.
+
+EOF
+fi
+
+exit 0

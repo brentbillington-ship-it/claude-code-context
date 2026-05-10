@@ -539,6 +539,20 @@ implementer-complete and before the user is asked to test.
 
 ---
 
+## Agent Files Governance — Non-Negotiable
+
+Any session creating, modifying, or retiring a file under
+`AGENTS_*.md`, `agents/**/*.md`, or `.claude/agents/**/*.md` MUST
+read and update `AGENT_MANAGER.md` in the same commit (registry row
++ changelog entry per the Lifecycle Rules in that file).
+
+The pre-commit hook at `.githooks/pre-commit` enforces this. New
+clones of CCC need a one-time `git config core.hooksPath .githooks`
+to arm the hook. Bypass with `CCC_SKIP_AGENT_HOOK=1 git commit` and
+explain the bypass in the commit message body.
+
+---
+
 ## Active Projects
 
 | Project | Repo | Notes |

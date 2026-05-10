@@ -10,7 +10,7 @@
 ## Prerequisites
 - `curl` available
 - Expected version string (from `version.js`)
-- Optionally: Playwright (for live render test — see AGENTS_PLAYWRIGHT_QA.md)
+- Optionally: Playwright (for live render test — see AGENTS_VISUAL_QA.md)
 
 ---
 

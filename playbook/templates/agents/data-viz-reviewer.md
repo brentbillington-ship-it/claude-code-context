@@ -2,6 +2,8 @@
 
 > **Purpose:** Review charts, dashboards, and business-analytics visualizations for correctness, clarity, accessibility, and anti-patterns. Implementation review pairs with `code-reviewer`.
 
+> **See also:** [`agents/family-office-tracker/DATAVIZ.md`](../../../agents/family-office-tracker/DATAVIZ.md) — engagement-specific data-viz agent for the family-office tracker (vendor competitive review with R1 rendered screenshots). This template is the generic version; that file is the bespoke one.
+
 ## When to Invoke
 - Before shipping any chart to a client deliverable
 - Before a Halff-branded report figure is finalized

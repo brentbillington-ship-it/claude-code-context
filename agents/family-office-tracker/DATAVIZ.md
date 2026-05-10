@@ -2,6 +2,8 @@
 
 > **Synthesizes data viz best practices from Tufte/Munzner/Cairo/Few alongside screenshot-verified vendor chart patterns, then maps specific chart types to specific tracker dashboard needs.**
 
+> **See also:** [`playbook/templates/agents/data-viz-reviewer.md`](../../playbook/templates/agents/data-viz-reviewer.md) — generic chart/dashboard reviewer for Halff/client deliverables. Different scope: this file is engagement-specific (vendor competitive review with R1 rendered screenshots); the template is generic chart correctness review.
+
 ## Methodology
 
 **Read `RESEARCH_METHODOLOGY_V2.md` in this directory first. Every chart claim in the deliverable MUST be backed by a screenshot the agent actually viewed — render the page, save the PNG, Read the PNG file path so the chart enters visual context. Only after viewing the rendered chart does the agent describe it.**
