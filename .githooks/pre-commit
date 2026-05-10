@@ -18,8 +18,9 @@ fi
 # Patterns the hook treats as "agent playbook files".
 agent_globs=(
   'AGENTS_*.md'
-  'agents/'           # any path starting with agents/
-  '.claude/agents/'   # modern convention, future-proofing
+  'agents/'              # any path starting with agents/ (engagement-specific bundles)
+  'playbook/agents/'     # core agent library (cross-project)
+  '.claude/agents/'      # modern convention, future-proofing
 )
 
 manager_file='AGENT_MANAGER.md'

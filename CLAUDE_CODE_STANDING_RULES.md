@@ -539,12 +539,44 @@ implementer-complete and before the user is asked to test.
 
 ---
 
+## Agent Library Lookup Order — Non-Negotiable
+
+When a session needs an agent for a common task (code review, research,
+data viz, doc writing, security scan, deploy verify, etc.), search in
+this order BEFORE drafting a new agent from scratch:
+
+1. **CCC core library** — `claude-code-context/playbook/agents/<name>.md`.
+   ~12 cross-project reusable agents. Invoke as-is, OR read as a starting
+   point and augment inline for task-specific needs (the augmentation
+   does not need to be persisted unless the same augmentation recurs).
+2. **CCC engagement-specific** — `claude-code-context/agents/<name>.md`
+   and `claude-code-context/agents/<group>/<name>.md`. Includes
+   `senior-product-review.md` (universal quality gate) and the
+   `family-office-tracker/` bundle (gala-holdings engagement).
+3. **CCC project playbooks** — `AGENTS_*.md` at the CCC root. Currently
+   four Canvassing-Map-specific operational playbooks (BROWSER_BOOTSTRAP,
+   COLOR_TRACE, DEPLOY_VERIFY, VISUAL_QA).
+4. **The active project's own agents** — `<project>/agents/` or
+   `<project>/.claude/agents/` inside whichever repo the session is
+   currently working in.
+5. **Other Brent-managed repos** under
+   `C:\Users\Brent\Code\BillingtonWorks\*\agents\` and
+   `C:\Users\Brent\Code\BillingtonWorks\*\.claude\agents\`. Last resort
+   if nothing in CCC fits — useful when an agent was previously written
+   for project A and project B has the same need.
+
+Only draft a new agent if none of these match, AND register it in
+`AGENT_MANAGER.md` per the governance rule below.
+
+---
+
 ## Agent Files Governance — Non-Negotiable
 
 Any session creating, modifying, or retiring a file under
-`AGENTS_*.md`, `agents/**/*.md`, or `.claude/agents/**/*.md` MUST
-read and update `AGENT_MANAGER.md` in the same commit (registry row
-+ changelog entry per the Lifecycle Rules in that file).
+`AGENTS_*.md`, `agents/**/*.md`, `playbook/agents/**/*.md`, or
+`.claude/agents/**/*.md` MUST read and update `AGENT_MANAGER.md` in the
+same commit (registry row + changelog entry per the Lifecycle Rules in
+that file).
 
 The pre-commit hook at `.githooks/pre-commit` enforces this. New
 clones of CCC need a one-time `git config core.hooksPath .githooks`

@@ -6,7 +6,10 @@
 
 ## Registry
 
-> **Scope:** This registry covers `AGENTS_*.md` at repo root and `agents/**/*.md`. Files under `playbook/templates/agents/` are exports for other repos to copy from, not active CCC agents.
+> **Scope:** This registry covers all active agents in CCC across three tiers:
+> 1. **Core library** at `playbook/agents/<name>.md` — cross-project reusable agents (code review, research, data viz, doc writing, security, etc.). Sessions invoke these as-is OR augment them inline for task-specific needs. This is the first place a session looks when it needs an agent.
+> 2. **Engagement-specific** at `agents/<name>.md` and `agents/<group>/<name>.md` — agents bound to a specific project/engagement (e.g., the family-office-tracker bundle for gala-holdings-tracker, or the universal senior-product-review quality gate).
+> 3. **Project playbooks** at `AGENTS_*.md` (root) — Canvassing-Map-specific operational playbooks. Phase 4 will migrate these into Canvassing-Map's own `.claude/agents/`.
 
 | Agent File | Status | Created | Last Updated | Scope | Retirement Trigger |
 |---|---|---|---|---|---|
@@ -24,6 +27,26 @@
 | `agents/family-office-tracker/FEATURES.md` | **ACTIVE** | 2026-05-05 | 2026-05-06 | Family-office tracker feature competitive matrix | Same as MANAGER |
 | `agents/family-office-tracker/FINANCE.md` | **ACTIVE** | 2026-05-05 | 2026-05-06 | Family-office tracker finance methodology + spreadsheet audit | Same as MANAGER |
 | `agents/family-office-tracker/SYNTHESIS.md` | **ACTIVE** | 2026-05-05 | 2026-05-06 | Family-office tracker research synthesis + style guide draft | Same as MANAGER |
+
+### Core Agent Library — `playbook/agents/`
+
+Cross-project reusable agents. **First place to look when a session needs an agent.** Invoke as-is, or read as the starting point and augment inline for task-specific needs. The library is currently under curation review (see `_audit/AGENT_LIBRARY_PROPOSAL.md` once it lands) — names and scopes here may change after that review.
+
+| Agent File | Status | Created | Last Updated | Scope | Retirement Trigger |
+|---|---|---|---|---|---|
+| `playbook/agents/browser-qa-generic.md` | **ACTIVE** | 2026-04-22 | 2026-04-22 | Generic Playwright visual-QA harness pattern (cross-project) | Curation review may rewrite or merge into a unified browser-qa agent |
+| `playbook/agents/checkpoint-keeper.md` | **ACTIVE** | 2026-04-22 | 2026-04-22 | Phase-checkpoint writer for long sessions | Curation review |
+| `playbook/agents/client-deliverable-packager.md` | **ACTIVE** | 2026-04-22 | 2026-04-22 | Zip / version client deliverables | Curation review |
+| `playbook/agents/code-reviewer.md` | **ACTIVE** | 2026-04-22 | 2026-04-22 | Generic code review (correctness, style, anti-patterns) | Curation review |
+| `playbook/agents/data-extractor.md` | **ACTIVE** | 2026-04-22 | 2026-04-22 | Generic data extraction from PDFs/HTML/spreadsheets | Curation review |
+| `playbook/agents/data-viz-reviewer.md` | **ACTIVE** | 2026-04-22 | 2026-05-10 | Generic chart/dashboard correctness + clarity review (paired with code-reviewer); cross-links to engagement-specific `agents/family-office-tracker/DATAVIZ.md` | Curation review |
+| `playbook/agents/deploy-verify-generic.md` | **ACTIVE** | 2026-04-22 | 2026-04-22 | Generic post-deploy smoke (cross-project) | Curation review |
+| `playbook/agents/doc-writer.md` | **ACTIVE** | 2026-04-22 | 2026-04-22 | Generic docs writer (READMEs, CLAUDE.md, deliverable docs) | Curation review |
+| `playbook/agents/halff-brand-auditor.md` | **ACTIVE** | 2026-04-22 | 2026-04-22 | Halff brand-compliance auditor (specific to Halff client work) | Curation review |
+| `playbook/agents/maps-tooling-reviewer.md` | **ACTIVE** | 2026-04-22 | 2026-04-22 | Maps app / regional analysis / geo-pipeline reviewer | Curation review |
+| `playbook/agents/research-subagent.md` | **ACTIVE** | 2026-04-22 | 2026-04-22 | Generic research subagent (web research, source-grounded synthesis) | Curation review |
+| `playbook/agents/security-scanner.md` | **ACTIVE** | 2026-04-22 | 2026-04-22 | Generic security review / secret scan / config check | Curation review |
+
 
 ### Status Values
 - **ACTIVE** — Available for invocation in any CC session.
@@ -140,3 +163,5 @@ When invoked with `audit`, the manager:
 | 2026-05-10 | AUDIT | (registry-wide) | Phase 3 audit back-fill: scope note added; senior-product-review and RESEARCH_METHODOLOGY_V2 added; family-office Last Updated bumped to 2026-05-06. Pre-commit drift hook installed under `.githooks/pre-commit`; standing rules amended to point at AGENT_MANAGER.md. |
 | 2026-05-10 | UPDATE | agents/family-office-tracker/DATAVIZ.md | Added "see also" cross-link to `playbook/templates/agents/data-viz-reviewer.md` (per audit §3 dup-playbook resolution). |
 | 2026-05-10 | UPDATE | AGENTS_DEPLOY_VERIFY.md | Fixed stale pointer: replaced `AGENTS_PLAYWRIGHT_QA.md` reference with `AGENTS_VISUAL_QA.md` (PLAYWRIGHT_QA was retired 2026-04-13). |
+| 2026-05-10 | RENAME | playbook/templates/agents/ → playbook/agents/ | Reframed the 12 files as the **active core agent library** (was incorrectly framed as "templates not in scope" in the prior commit). Sessions are now told to invoke or augment these before drafting new agents. Curation review pending — proposal to land at `_audit/AGENT_LIBRARY_PROPOSAL.md`. |
+| 2026-05-10 | AUDIT | (registry-wide) | Replaced scope note with three-tier explanation (core library / engagement / project playbooks). Added Core Library subsection registering all 12 files. Pre-commit hook globs extended to include `playbook/agents/` so future edits to the library enforce the registry update. Standing rules amended with "Agent Library Lookup Order" (5-tier search). |
