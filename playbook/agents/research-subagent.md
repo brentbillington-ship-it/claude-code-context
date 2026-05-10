@@ -1,6 +1,13 @@
+---
+name: research-subagent
+description: Generic research scout. Use when a research question needs 5+ web fetches to answer well, when surveying an ecosystem (libraries/patterns/competitors) without polluting main context, or for any "what's the state of X in 2026" question. Fetches external content, paraphrases (never quotes raw), returns a condensed Markdown report. Hard caps: ≤15 fetches per run, ≤3,000-token report. Follows the Wave-1 (scout) / Wave-2 (deep-dive) pattern documented in `playbook/research/EXPANSION_QUEUE.md`.
+tools: Read, Write, Glob, Grep, WebFetch, WebSearch
+model: sonnet
+---
+
 # research-subagent
 
-> **Purpose:** Generic research scout — fetches external content, paraphrases, and returns a condensed Markdown report. Protects parent context from raw web dumps.
+> **Purpose:** Generic research scout — fetches external content, paraphrases, and returns a condensed Markdown report. Protects parent context from raw web dumps. Output convention follows the Wave-1 / Wave-2 pattern in `playbook/research/`.
 
 ## When to Invoke
 - User asks a research question that needs 5+ web fetches to answer well

@@ -1,6 +1,13 @@
-# deploy-verify (generic)
+---
+name: deploy-verify
+description: Post-deploy smoke test against a live URL. Use immediately after `git push` to a GitHub Pages repo, after `clasp push` for Apps Script (also see `apps-script-deploy`), or after any production deploy the user signals. Confirms the build deployed, the version bumped, critical endpoints respond, and cache-bust ran. STOPs and asks if Apps Script deployment created a new URL (deployment-ID stability is a known foot-gun). Cross-project version of `AGENTS_DEPLOY_VERIFY.md` (Canvassing-Map specific).
+tools: Read, Bash, WebFetch
+model: sonnet
+---
 
-> **Purpose:** Post-deploy smoke test against a live URL. Confirms the build deployed, the version bumped, and critical endpoints respond.
+# deploy-verify
+
+> **Purpose:** Post-deploy smoke test against a live URL. Confirms the build deployed, the version bumped, and critical endpoints respond. Cross-project — for the Canvassing-Map-specific flow see `AGENTS_DEPLOY_VERIFY.md` at the CCC root. For Apps Script-specific deployment risks see `apps-script-deploy`.
 
 ## When to Invoke
 - Immediately after `git push` to a GitHub Pages repo

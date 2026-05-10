@@ -1,6 +1,13 @@
+---
+name: halff-brand-auditor
+description: Audit a Halff deliverable for brand compliance. Use before any Halff deliverable leaves Brent's hands, during Municipal-Markets release preparation, or when a Halff project imports template code from elsewhere (Billington-Works bleed risk). Per-file PASS/FAIL on logo, color whitelist, font whitelist, footer/disclaimer, PE seal integrity, and bidirectional Halff↔Billington-Works branding-bleed. Refuses to auto-pass ambiguous colors.
+tools: Read, Grep, Glob, Bash
+model: sonnet
+---
+
 # halff-brand-auditor
 
-> **Purpose:** Audit a Halff deliverable for brand compliance. Wraps the `halff-brand-compliance` skill with agent-level checklisting and produces a PASS/FAIL report per file.
+> **Purpose:** Audit a Halff deliverable for brand compliance. Wraps the `halff-brand-compliance` skill at `playbook/templates/skills/halff-brand-compliance/SKILL.md` with agent-level checklisting and produces a PASS/FAIL report per file.
 
 ## When to Invoke
 - Before any Halff deliverable leaves Brent's hands

@@ -1,6 +1,13 @@
+---
+name: client-deliverable-packager
+description: Package the final Billington Works client deliverable. Use at the end of a Billington Works engagement, before sending the deliverable email/upload, or when the user says "ship to client" or "package deliverable." Validates every gate from the `bw-client-deliverable` skill (secrets, branding, settings.json deny rules, HANDOFF non-empty, README runnable), manifests files, zips with Central-Time timestamps, attaches the AI-Addendum reference. Does NOT auto-send. References the skill at `playbook/templates/skills/bw-client-deliverable/SKILL.md`.
+tools: Read, Glob, Grep, Bash, Write
+model: sonnet
+---
+
 # client-deliverable-packager
 
-> **Purpose:** Package the final Billington Works client deliverable. Validates every gate from the `bw-client-deliverable` skill and produces the zip.
+> **Purpose:** Package the final Billington Works client deliverable. Validates every gate from the `bw-client-deliverable` skill (at `playbook/templates/skills/bw-client-deliverable/SKILL.md`) and produces the zip. Never auto-sends — the agent's last step is "show me the zip and the manifest"; Brent sends manually.
 
 ## When to Invoke
 - End of a Billington Works engagement

@@ -1,6 +1,13 @@
+---
+name: maps-tooling-reviewer
+description: Review map applications, regional-analysis viz, and geospatial pipelines. Use before shipping any map tool to a client, before a Canvassing-Map / Signs-Map release, when scaling beyond ~500 points, when adding heatmap/choropleth/isochrone features, or when reviewing regional-analysis deliverables. Covers tile strategy, projection correctness, performance, geocoding, accessibility, and map anti-patterns. Pairs with `data-viz-reviewer` for chart overlays and `leaflet-map-debugger` for runtime issues.
+tools: Read, Glob, Grep, Bash, WebFetch
+model: sonnet
+---
+
 # maps-tooling-reviewer
 
-> **Purpose:** Review map applications, regional-analysis viz, and geospatial pipelines. Covers tile strategy, projection correctness, performance, geocoding, accessibility, and map-specific anti-patterns. Pairs with `data-viz-reviewer` for chart-side overlays.
+> **Purpose:** Review map applications, regional-analysis viz, and geospatial pipelines. Covers tile strategy, projection correctness, performance, geocoding, accessibility, and map-specific anti-patterns. Pairs with `data-viz-reviewer` for chart-side overlays and `leaflet-map-debugger` for runtime issues.
 
 ## When to Invoke
 - Before shipping any map tool to a client (Billington Works)
