@@ -75,6 +75,21 @@ Write `qa/<YYYY-MM-DD>/report.md` with:
 - Console errors verbatim (no paraphrase)
 - Network errors verbatim
 - Total time
+- **Visual review per V1-V5** (see below) for each screenshot
+
+### Step 6 — Visual review per V1-V5 (mandatory)
+
+Per CCC Standing Rules § Visual Review Discipline (added 2026-05-19 after the BB-Notes v4.3 CodeMirror incident where this agent's class of work shipped a fully-broken editor with all probes returning `hasX: true`).
+
+For every screenshot reviewed, the report must include:
+
+1. **V1 — Pixel observation.** Describe what you see: text colors, dominant typeface (serif/sans/mono), readability at-a-glance. BEFORE comparing to spec.
+2. **V2 — Failure mode match.** The dispatch prompt should have named "broken looks like X." Confirm: did you see X? If the dispatch didn't name failure modes, request a tightened prompt instead of guessing.
+3. **V3 — No probe-as-proof.** `hasX: true` proves element exists. Doesn't prove it renders correctly. Always pair with visual inspection.
+4. **V4 — Reference cross-check.** If a known-good reference exists (`qa/baselines/` or `dogfood-refs/` or a competitor capture), name which one you compared against + whether the new capture is in the same visual family.
+5. **V5 — Readability check.** Explicitly answer: "any text where foreground and background contrast is too low to read?" Yes/no/where.
+
+A screenshot lacking V1-V5 evidence is "not visually verified" — not PASS.
 
 ## Success Criteria
 - All viewports screenshotted, diffed, and `Read` back into context

@@ -125,3 +125,17 @@ Single markdown file at `research/<NN>-senior-review.md` (or split into three do
 - Don't skip a viewport or a theme to save time. The skip is exactly where the bug lives.
 - Don't ship findings the implementer wouldn't have asked you to find. The whole point is that the implementer is blind to these.
 - Per CCC D3: observation is step 1, theory is step 2. Render and look before theorizing.
+
+## Visual review specificity — V1-V5 (NON-NEGOTIABLE)
+
+Per CCC Standing Rules § Visual Review Discipline (V1-V5). Added 2026-05-19 after the BB-Notes v4.3 CodeMirror port shipped with a broken editor that this agent had previously marked PASS — the dispatch prompt had asked "verify the editor renders" and the reviewer found `<div class="CodeMirror">` in the DOM and called it good. The editor was actually showing raw markdown markers + black text on dark bg + no cursor.
+
+**This agent's UIX-lens reports MUST include, for each surface inspected:**
+
+1. **V1 — Pixel observation BEFORE deduction.** Describe what the screenshot SHOWS (typefaces apparent, colors, sizes, readability) BEFORE comparing to spec.
+2. **V2 — Cite the specific failure mode named in the dispatch prompt.** If the controller didn't name failure modes, reject the dispatch and request a tighter prompt.
+3. **V3 — Don't accept probe-truthiness as visual proof.** `hasX: true` only proves element existence. Pair with screenshot inspection.
+4. **V4 — Cross-reference a known-good visual reference** when one exists in `dogfood-refs/` or `research/screenshots/<reference-app>/`. Report "same visual family / different family / no reference available."
+5. **V5 — Mandatory color/readability pass.** For every screenshot reviewed, answer: "any text where foreground and background contrast is too low to read?" Yes/no/where.
+
+**Reports that lack V1-V5 evidence on a surface are not valid PASS findings on that surface.** A surface either gets the full V1-V5 treatment in the report, or it's marked "not visually verified — re-dispatch needed."

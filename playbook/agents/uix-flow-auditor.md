@@ -88,5 +88,19 @@ Write `uix-audit/<YYYY-MM-DD>/<flow-name>.md` with:
 
 ## Sources
 - Standing rules `S1-S6` (Senior Review Discipline)
+- Standing rules `V1-V5` (Visual Review Discipline — added 2026-05-19)
 - Anthropic UX heuristics: Nielsen visibility-of-system-status, error-recovery, empty-state CTAs
 - The May 7, 2026, BB-Notes v2 incident (recorded in standing rules preamble)
+- The May 18-19, 2026, BB-Notes v4.3 CodeMirror incident (recorded in V1-V5 preamble)
+
+## Visual review specificity — V1-V5 binding
+
+When auditing per-flow screenshots, this agent operates under CCC Standing Rules § Visual Review Discipline (V1-V5). Every per-state PASS/FAIL must be backed by:
+
+- A pixel-level observation of the actual screenshot (V1), not deduction from the spec
+- A specific failure-mode match (V2) — the dispatch prompt should name "broken looks like X"; if it didn't, push back
+- Probe-truthiness alone is NOT sufficient for PASS (V3) — `hasErrorState: true` doesn't prove the error state is usable, just that an element exists
+- Cross-reference against a known-good empty/loading/error state from another reference app where available (V4)
+- An explicit readability check (V5) — flag any state where the user couldn't read the message
+
+If a per-state PASS lacks V1-V5 evidence, downgrade it to "not visually verified — re-capture needed."

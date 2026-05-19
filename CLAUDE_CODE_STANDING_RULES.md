@@ -539,6 +539,128 @@ implementer-complete and before the user is asked to test.
 
 ---
 
+## Visual Review Discipline — Non-Negotiable
+
+These rules exist because of the May 18-19 2026 BB-Notes v4.3 (CodeMirror
+port) incident: implementer agents captured screenshots showing the
+editor in a fully-broken state (raw markdown markers visible as literal
+text, black text on dark background, no visible cursor). Visual-review
+agents inspected those captures and called them PASS. The bug shipped
+to Brent's PWA. He caught it in 30 seconds of actual use.
+
+The reviewers failed because their dispatch prompts checked
+**"does the element exist"** instead of **"does the rendered output
+look right."** Both can be true while the visual experience is
+completely broken — element-exists is necessary but not sufficient.
+
+These rules apply to any agent dispatched against rendered UI
+screenshots — `senior-product-review` (UIX lens), `uix-flow-auditor`,
+`browser-qa`, `family-office-tracker/AESTHETICS`, and any inline
+visual-review subagent.
+
+### V1. Describe pixels first, deduce from spec second
+
+The reviewer must report what they SEE — colors, sizes, positions,
+readability — **before** comparing the observation to the spec.
+
+Bad prompt: "verify the H1 renders in DM Serif Display"
+(agent finds `font-family: "DM Serif Display"` in computed style + passes,
+even if the actual rendered glyphs are a fallback because the font
+didn't load.)
+
+Good prompt: "open the screenshot and describe the H1: what typeface
+does it APPEAR to be (serif/sans/mono)? Is it large relative to body
+text? Then check: does that match a DM Serif Display rendering or a
+Georgia fallback?"
+
+The principle: observation is step 1, deduction is step 2.
+
+### V2. Name failure modes by example, not abstractly
+
+The dispatch prompt names what BROKEN looks like — specific patterns
+the agent should reject.
+
+Bad: "verify live markdown decorations apply"
+Good: "in the screenshot, the text `**bold**` should appear as **bold**
+with faded `**` markers around it. If you see literal `**bold**`
+characters at the same weight as surrounding text, that's a FAIL —
+the decoration CSS didn't apply. If you see `**bold**` where the
+`**` are visibly dimmer than the word in between, that's a PASS."
+
+The principle: a failure mode the reviewer can match against beats
+an abstract requirement they have to evaluate.
+
+### V3. Element-existence is necessary but not sufficient
+
+`document.querySelector(".CodeMirror") !== null` proves the element is
+mounted. It proves nothing about whether the editor LOOKS right. Probe
+results like `hasCodeMirror: true` / `hasSlashMenu: true` are useful
+diagnostics but cannot substitute for visual inspection.
+
+Dispatch prompts that ONLY check probe truthiness ("verify the probe
+shows hasCM:true") will pass broken state. Always pair probe checks
+with a visual inspection step: "now open the screenshot and confirm
+the editor area shows decorated markdown, not raw markers."
+
+### V4. Cross-reference a known-good visual reference, not just the spec
+
+The reviewer reads ONE pre-approved reference image alongside the new
+capture and answers: "is the new capture in the same visual family as
+the reference?" Reference images live in the project's
+`dogfood-refs/`, `research/screenshots/<reference-app>/`, or equivalent.
+
+Bad: "the sidebar should follow the EvanBacon Apple Notes Folders
+pattern per design doc §5"
+(agent has no concrete pattern to match against, just words.)
+
+Good: "compare the new sidebar capture at `<path>` to the reference
+at `docs/dogfood-refs/apple-notes-clone/evanbacon-iphone.png`. Are the
+row heights similar? Do the dividers look similar (color, weight,
+spacing)? Do the icons sit in similar positions? Same visual family
+or different?"
+
+The principle: visual judgement requires visual reference, not prose.
+
+### V5. Color contrast + readability check is mandatory
+
+The reviewer must explicitly identify any text where foreground and
+background contrast is so low that legibility is compromised. The
+common failure: dark-theme rendering plain black text from a base
+library (CodeMirror, Highlight.js, etc.) without the project's color
+override taking effect.
+
+Dispatch prompts must include: "identify any text in the screenshot
+that is hard to read because color and background are too similar. If
+you find any, report the surface + the approximate colors." The agent
+should be able to answer "no unreadable text found" or "this surface
+shows dark gray text on dark warm background."
+
+Without this check, contrast regressions ship silently — they're
+invisible to spec-based deduction because the CSS rules can be
+correctly defined and still fail to apply due to load-order, scoping,
+or specificity bugs.
+
+---
+
+### How to apply V1-V5 in a dispatch prompt
+
+The senior-product-review agent (and any visual-review subagent)
+dispatch prompts must include a "Visual review specificity (V1-V5)"
+section that:
+
+1. **Names the screenshots to review** by path
+2. **For each screenshot, names a specific failure mode by example** (V2)
+3. **Names a reference image to cross-check against** when one exists (V4)
+4. **Requires a color/readability pass** (V5)
+5. **Forbids accepting probe-truthiness as visual proof** (V3)
+
+A reviewer that only reports "all elements present, probe shows true"
+must be rejected and re-dispatched with a tightened prompt. The
+controller (the agent doing the dispatching) is responsible for
+prompt quality — the reviewer can only check what it's asked.
+
+---
+
 ## Agent Library Lookup Order — Non-Negotiable
 
 When a session needs an agent for a common task (code review, research,

@@ -53,3 +53,17 @@ V1 failure mode this avoids: V1 inferred UI quality from marketing-copy text via
 
 - `research/01_aesthetics_review.md` (or `_v2.md` on a re-run)
 - `research/screenshots/aesthetics/<vendor>/*.png`
+
+## Visual review specificity — V1-V5 (mandatory)
+
+Per CCC Standing Rules § Visual Review Discipline (added 2026-05-19). This agent's pattern was copied into BB-Notes' SPARKLE-PASS-aesthetics-review and propagated the failure mode that shipped a broken CodeMirror editor — observations said "live decoration is achieved" while the screenshots actually showed raw markdown with black text on dark bg. The pattern below prevents that.
+
+For every per-vendor section + every "build recommendation," the report must include:
+
+1. **V1 — Pixel observation BEFORE deduction.** Describe what the screenshot shows (typefaces apparent, dominant colors, density, readability) BEFORE comparing to design lock. Quote specific pixel values from screenshots when claiming a color/font — "the H1 in this screenshot appears to be a serif typeface, large (looks ~28-32px relative to body), warm-charcoal foreground on cream background."
+2. **V2 — Name failure modes by example.** When recommending an aesthetic for the build, name what a SHIPPED-BROKEN version would look like so the implementer + reviewer can detect it. "Bold should render bold-with-faded-markers; if you see literal `**bold**` markers at the same weight as surrounding text, the decoration CSS hasn't applied."
+3. **V3 — Don't conflate vendor-marketing visuals with vendor-app-UI.** A landing-page screenshot of a vendor is NOT proof of the vendor's app UI. Mark each citation as "marketing page" / "in-app UI from authed session" / "third-party review screenshot" / "YouTube walkthrough frame."
+4. **V4 — Cross-reference between vendors, not just vs spec.** Side-by-side comparison ("Apple Notes Folders pattern at `<path>` vs Bear sidebar at `<path>`: similar row height, different divider treatment") beats two separate per-vendor sections.
+5. **V5 — Readability check on every cited screenshot.** If text in a vendor's marketing/UI screenshot is hard to read because of contrast, flag it — that vendor isn't a model for that surface.
+
+The aesthetic review's job is to give the IMPLEMENTER specific things to match against + the REVIEWER specific failure modes to detect. Vague "feels modern" prose helps neither.
