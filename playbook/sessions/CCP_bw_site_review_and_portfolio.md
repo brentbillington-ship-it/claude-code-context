@@ -97,8 +97,8 @@ Confirm with Brent what each showcase-eligible asset actually is. Brent named:
 
 - **Canvassing Map** (Chaka)
 - **Sign Map** (Chaka)
-- **"Finance Report"** for the campaign — confirm what tool this maps to. Candidates from BB-Notes: Place 5 Tracker, Early Voting Tracker, campaign-finance / TEC filing report, or something not yet logged. **Ask Brent in the orient phase.**
-- **Gala Ventures stuff** — most likely the family-office investment tracker (`gala-holdings-tracker` repo). Note: BB-Notes calls this "Gala Holdings" — confirm the naming Brent wants in any portfolio artifact (or whether it's shown un-named).
+- **Place 5 Tracker** (Chaka) — Brent's "Finance Report" reference resolves to the Place 5 Tracker (confirmed 2026-05-19).
+- **Family-office investment tracker** (the engagement formerly drafted in `gala-holdings-tracker`) — **the client is never named anywhere.** No "Gala", no "Gala Holdings", no "Gala Ventures" in any portfolio artifact, draft or published. Always abstracted: "a Texas single-family office," "a private family office," or similar.
 - **Maybe the Facebook thing** — Julie Waters FB participant export scraper. Decision deferred to Brent.
 
 ### Step 2b — Per-case-study safety gate (mandatory)
@@ -118,8 +118,8 @@ Default-deny on any case study where any of #1–#5 are unresolved.
 
 | Candidate | Consent | Naming | Code retention | Capture state | Phase |
 |---|---|---|---|---|---|
-| Chaka tools (whole suite) | IP letter signed; testimonial + code-retention ask sent 5/14, **awaiting reply** | Public OK assumed once Chaka confirms in writing | Pending Chaka's explicit yes | **Blocker: capture checklist incomplete.** Sites still live, can capture now. | v1 of portfolio iff Chaka replies yes; otherwise v2 |
-| Gala Holdings | None for public attribution. NDA in place. | **Fully abstracted only** — "a Texas single-family office" or similar | N/A (active engagement, no public client name) | Tracker still in scope-confirm; no shippable screenshots yet | v2 — wait until v1 of the tracker is delivered + abstracted screenshots possible |
+| Chaka tools (whole suite, incl. Place 5 Tracker) | IP letter signed; testimonial + code-retention ask sent 5/14, **awaiting reply** | Public OK assumed once Chaka confirms in writing | Pending Chaka's explicit yes | **Blocker: capture checklist incomplete.** Sites still live, can capture now. | v1 of portfolio iff Chaka replies yes; otherwise v2 |
+| Family-office tracker (client unnamed) | None for public attribution. NDA in place. | **Hard rule: client is never named.** No "Gala" anywhere — draft, public, internal artifact, screenshot caption, or commit message. Abstracted descriptors only. | N/A (active engagement, no public client name) | Tracker still in scope-confirm; no shippable screenshots yet | v2 — wait until v1 of the tracker is delivered + abstracted screenshots possible |
 | Julie Waters FB scraper | Testimonial draft held; ask pending (5-10 day window from 5/14) | **Fully abstracted** unless she explicitly OKs naming | She gave it free; retention is Brent's by default | Live + processing; can capture now | v1 iff testimonial lands + she OKs public attribution; otherwise abstracted v1 |
 
 ### Step 2c — Architecture options to evaluate
