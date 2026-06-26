@@ -539,6 +539,89 @@ implementer-complete and before the user is asked to test.
 
 ---
 
+## Multi-Agent Review & Adversarial Verification — Non-Negotiable
+
+These rules exist because the June 25-26 2026 BB-Notes editor-hardening
+session showed two single-agent failure modes back to back: a lone
+review agent confidently "finds" issues to justify its run, and a lone
+implementer ships against the spec rather than against what actually
+breaks. The fix that worked: fan review out across independent lenses,
+then make every finding survive a separate refute-by-default verifier
+before it reaches the report. That same lens, earlier in the same
+session's editor audit, correctly downgraded three vendors (Sveltia's
+text-node escape regex, Milkdown's wontfix `<br/>` injection, Lexical's
+missing TABLE transformer) from "green on the marketing page" to "red in
+the issue tracker" — and it drops the inverse cry-wolf finding just as
+readily. Extends Senior Review Discipline (S1-S6); apply whenever a
+review produces findings, on build work as well as product work.
+
+### AV1. Every review finding goes through adversarial verify
+
+A finding from any review lens (correctness, security, regression, UIX,
+research-gap) does NOT enter the synthesis report until a SEPARATE
+verifier agent has tried to refute it. The verifier:
+- is dispatched fresh — not the lens that produced the finding, not the
+  implementer who wrote the code
+- defaults to "refuted" and confirms only with line:column evidence from
+  the actual code
+- returns confirmed / refuted / unprovable-from-code, plus a revised
+  severity (keep / downgrade / drop)
+
+Only confirmed-with-evidence findings reach the human. This is the layer
+that filters the confident-but-wrong finding. Skipping it ships a noisy
+punch list that costs the user trust and time.
+
+### AV2. The build-work lens menu
+
+S2's three lenses (UIX / QA / research-gap) are right for product
+surfaces. For BUILD work — code changes, refactors, infra — run this
+menu instead, each as an independent agent:
+- **Correctness** — logic bugs THIS diff introduces (not pre-existing)
+- **Security** — adversarial; the `security-review` skill's exclusions apply
+- **UX / a11y** — keyboard, screen-reader, contrast, mobile width
+- **Regression** — per commit, the existing flow most likely to break,
+  written as a specific reproducible scenario
+- **Cross-batch consistency** — do the changes interact correctly with
+  each other and with the stated architecture?
+
+Pick the subset that fits the diff: a one-file CSS tweak needs
+Correctness + maybe UX; a new auth backend needs all five.
+
+### AV3. Adversarial framing is load-bearing, not decorative
+
+"Check if this finding is right" produces agreement bias. "Try to refute
+this finding; default to refuted unless you find line:column evidence"
+produces filtering. The prompt wording carries the value — same failure
+class as V1's "describe pixels first" vs "verify the spec." A verifier
+that merely re-states the finding more confidently must be re-dispatched
+with adversarial framing.
+
+### AV4. Scale the fan-out to the box, not the ambition
+
+The workflow runtime caps concurrent agents at `min(16, cpu_cores - 2)`
+per workflow. On a 4-core container that is TWO at a time, so a
+25-finding verify phase runs ~12 sequential rounds. Check `nproc` before
+sizing a sweep — don't promise 16-wide on a 4-core box. Mitigations that
+preserve coverage without a bigger box:
+- **Batch findings per verifier** — one verifier handles 3-5 related
+  findings instead of one each. Same coverage, ~1/3 the agent count.
+- **Dedup before fan-out** — a "regression" and a "correctness" finding
+  on the same line are one cluster; verify once.
+- **Pipeline, don't barrier** — when synthesis doesn't need every finding
+  at once, let each lens's findings start verifying the moment that lens
+  finishes (`pipeline()`) instead of waiting for all lenses (`parallel()`
+  barrier). Tighter wall-clock when the cap is small.
+
+### AV5. The implementer answers; the reviewer finds; the synthesist decides
+
+Per S3 the agent that wrote the code is the worst critic of it. In a
+multi-agent sweep the implementer's role is to answer the lenses'
+questions, not to generate or grade findings. The synthesis agent — also
+not the implementer — owns the final keep/drop call from the verifier
+verdicts, and produces the punch list the human reads.
+
+---
+
 ## Visual Review Discipline — Non-Negotiable
 
 These rules exist because of the May 18-19 2026 BB-Notes v4.3 (CodeMirror
@@ -717,4 +800,4 @@ explain the bypass in the commit message body.
 
 ---
 
-*Last updated: April 2026*
+*Last updated: June 2026*
