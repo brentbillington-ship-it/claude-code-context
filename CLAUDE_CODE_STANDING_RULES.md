@@ -3,6 +3,46 @@
 
 ---
 
+## Core — the ten rules that bite hardest
+
+The whole file applies. If a depleted reader at 9 PM absorbs only this
+block, these are the rules that prevent the known failure modes:
+
+1. **Action gate.** Numbered plan, stop, wait for "go" before any edit,
+   commit, or browser action. Pushes OK with "go"; destructive actions
+   need separate explicit approval.
+2. **`py` not `python`. `py -m pip` not `pip`.** (Mechanically enforced
+   where the py-pip-guard hook is installed.)
+3. **Central Time** on every timestamp, file mtime, and commit message.
+4. **No secrets in committed source.** Dev passwords live in
+   `CLAUDE.local.md` (git-ignored). The pre-commit secret scan blocks
+   reintroduction.
+5. **Know your environment before claiming anything is blocked.**
+   § Sandbox / Network (Environment Matrix). Allowlist changes need a
+   session RESTART.
+6. **Visual claims require rendered pixels.** § Research Methodology
+   R1-R6. WebSearch text is cross-validation, never the primary source.
+7. **Visual fixes require visual verification.** § Debugging Discipline
+   D1-D8 and § Visual Review Discipline V1-V5. Element-exists is not
+   looks-right.
+8. **Non-minor ships get a dispatched senior review.** § Senior Review
+   S1-S6. The implementer never self-reviews.
+9. **Model routing:** Sonnet 5 workers, Opus orchestrator, Fable only by
+   explicit decision. § Model Routing, including the ultracode budget rule.
+10. **Reference harness files by section heading, never by line number.**
+
+Section index: Who I Am · Prime Directive · Context Management · Model
+Routing · Plugins & Tools (incl. Browser channel) · MCP Servers · Custom
+Skills · Subagent Pattern · Notifications · GitHub · Sandbox / Network
+(Environment Matrix) · Python Stack · VS Code Extensions · Code Delivery
+Rules · CLAUDE.md Rules · Communication Style · Research Methodology
+(R1-R6) · Debugging Discipline (D1-D8) · Senior Review Discipline (S1-S6)
+· Visual Review Discipline (V1-V5) · Shipping Lessons (L1-L6) · Agent
+Library Lookup Order · Agent Files Governance · Platform Notes · Active
+Projects
+
+---
+
 ## Who I Am
 
 Civil PE at Halff Associates (DFW). Building a freelance AI dev business called **Billington Works**.
