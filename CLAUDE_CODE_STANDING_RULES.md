@@ -438,6 +438,13 @@ regression set. Re-run after every change that could affect them.
 Any case that passed a code-path test but failed a visual test means
 the visual test is the one that counts going forward.
 
+**A suite that isn't green on main is not a regression set.** Any
+change that replaces a UI substrate (editor library, framework,
+renderer) must run the FULL existing dogfood suite in the same
+session and modernize or explicitly retire each failing script.
+(Promoted 2026-07-02 from BB-Notes: the CM6 swap left 6 dogfood
+scripts silently failing on CM5 selectors for weeks.)
+
 ### D7. For mapping specifically
 
 Parcel centroid ≠ rooftop. Legal parcel polygons often include
@@ -686,6 +693,57 @@ A reviewer that only reports "all elements present, probe shows true"
 must be rejected and re-dispatched with a tightened prompt. The
 controller (the agent doing the dispatching) is responsible for
 prompt quality — the reviewer can only check what it's asked.
+
+---
+
+## Shipping Lessons — Promoted from Project Post-Mortems
+
+Durable rules promoted from project UPDATE_TO_CCC files. Each carries its
+source and date. Terse on purpose; the source repo holds the full story.
+
+### L1. A stripped prefix is a data-loss bug waiting for its first save
+
+Whenever a view strips or rewrites a prefix/suffix for display or editing
+(frontmatter blocks, headers, BOMs), every save path must provably
+re-attach it, and the dogfood suite needs a round-trip fixture:
+open, edit, save, byte-compare the untouched region. (BB-Notes 2026-07-02:
+first manual save of any note with frontmatter silently deleted it.)
+
+### L2. Before deleting a "redundant" feature, enumerate what ONLY it does
+
+List the surface's capabilities and diff against the surviving surfaces.
+Remove only after the survivors cover the diff. (BB-Notes 2026-07-02: the
+"redundant" split preview was the only surface rendering pasted images.)
+
+### L3. A shipped cron workflow with zero runs is a scheduling bug, not lag
+
+After shipping any scheduled GitHub Action, verify a nonzero run count
+within one interval. Zero runs means the scheduler never armed
+(workflow files landed via API commits are the known trigger); a human
+manual dispatch from the Actions tab both tests the pipeline and wakes
+the scheduler. (BB-Notes 2026-07-02: two */30 crons sat "active" 13+
+hours with zero runs.)
+
+### L4. `[hidden]` loses to any author `display` rule
+
+Add the global reset `[hidden] { display: none !important; }` to every
+project stylesheet. (BB-Notes 2026-07-01: bug class hit twice in one
+repo; app shell rendered behind the auth gate, hidden header ghosted a
+95px gap.)
+
+### L5. CodeMirror 6: block decorations come from StateFields
+
+Widget/replace decorations with `block: true` must be provided by a
+StateField (`provide: f => EditorView.decorations.from(f)`); only inline
+marks and line decorations belong in a ViewPlugin. The error surfaces at
+runtime, not build time. (BB-Notes 2026-07-01: cost one rebuild cycle.)
+
+### L6. If you fetch file bodies anyway, keep them
+
+A Contents-API tree walk that fetches bodies to parse headers has already
+paid for full-text search and backlinks; retain the text instead of
+re-fetching. No index library needed under ~1MB corpus. (BB-Notes
+2026-07-01. Generalizes to any GitHub-backed dashboard.)
 
 ---
 
