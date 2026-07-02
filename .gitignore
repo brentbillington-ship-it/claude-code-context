@@ -10,3 +10,8 @@
 
 # Personal memory file with local URLs/credentials — never commit
 CLAUDE.local.md
+
+# Assembled plugin payload — built by tools/build-plugin.sh from canonical sources
+plugin/skills/
+plugin/agents/
+plugin/hooks/scripts/

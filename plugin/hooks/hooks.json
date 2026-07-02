@@ -1,0 +1,50 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          { "type": "command", "command": "${CLAUDE_PLUGIN_ROOT}/hooks/scripts/session-start-context.sh" }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Write|Edit|MultiEdit",
+        "hooks": [
+          { "type": "command", "command": "${CLAUDE_PLUGIN_ROOT}/hooks/scripts/secret-scan-preedit.sh" },
+          { "type": "command", "command": "${CLAUDE_PLUGIN_ROOT}/hooks/scripts/ruff-pretooluse.sh" }
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          { "type": "command", "command": "${CLAUDE_PLUGIN_ROOT}/hooks/scripts/rm-rf-guard.sh" },
+          { "type": "command", "command": "${CLAUDE_PLUGIN_ROOT}/hooks/scripts/py-pip-guard.sh" }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          { "type": "command", "command": "${CLAUDE_PLUGIN_ROOT}/hooks/scripts/checkpoint-autosave.sh" },
+          { "type": "command", "command": "${CLAUDE_PLUGIN_ROOT}/hooks/scripts/desktop-notify-on-complete.sh" },
+          { "type": "command", "command": "${CLAUDE_PLUGIN_ROOT}/hooks/scripts/dogfood-suite-gate.sh", "timeout": 300 }
+        ]
+      }
+    ],
+    "SubagentStop": [
+      {
+        "hooks": [
+          { "type": "command", "command": "${CLAUDE_PLUGIN_ROOT}/hooks/scripts/subagent-stop-queue-next.sh" }
+        ]
+      }
+    ],
+    "Notification": [
+      {
+        "hooks": [
+          { "type": "command", "command": "${CLAUDE_PLUGIN_ROOT}/hooks/scripts/desktop-notify-on-blocked.sh" }
+        ]
+      }
+    ]
+  }
+}
