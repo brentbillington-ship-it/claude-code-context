@@ -3,6 +3,46 @@
 
 ---
 
+## Core — the ten rules that bite hardest
+
+The whole file applies. If a depleted reader at 9 PM absorbs only this
+block, these are the rules that prevent the known failure modes:
+
+1. **Action gate.** Numbered plan, stop, wait for "go" before any edit,
+   commit, or browser action. Pushes OK with "go"; destructive actions
+   need separate explicit approval.
+2. **`py` not `python`. `py -m pip` not `pip`.** (Mechanically enforced
+   where the py-pip-guard hook is installed.)
+3. **Central Time** on every timestamp, file mtime, and commit message.
+4. **No secrets in committed source.** Dev passwords live in
+   `CLAUDE.local.md` (git-ignored). The pre-commit secret scan blocks
+   reintroduction.
+5. **Know your environment before claiming anything is blocked.**
+   § Sandbox / Network (Environment Matrix). Allowlist changes need a
+   session RESTART.
+6. **Visual claims require rendered pixels.** § Research Methodology
+   R1-R6. WebSearch text is cross-validation, never the primary source.
+7. **Visual fixes require visual verification.** § Debugging Discipline
+   D1-D8 and § Visual Review Discipline V1-V5. Element-exists is not
+   looks-right.
+8. **Non-minor ships get a dispatched senior review.** § Senior Review
+   S1-S6. The implementer never self-reviews.
+9. **Model routing:** Sonnet 5 workers, Opus orchestrator, Fable only by
+   explicit decision. § Model Routing, including the ultracode budget rule.
+10. **Reference harness files by section heading, never by line number.**
+
+Section index: Who I Am · Prime Directive · Context Management · Model
+Routing · Plugins & Tools (incl. Browser channel) · MCP Servers · Custom
+Skills · Subagent Pattern · Notifications · GitHub · Sandbox / Network
+(Environment Matrix) · Python Stack · VS Code Extensions · Code Delivery
+Rules · CLAUDE.md Rules · Communication Style · Research Methodology
+(R1-R6) · Debugging Discipline (D1-D8) · Senior Review Discipline (S1-S6)
+· Visual Review Discipline (V1-V5) · Shipping Lessons (L1-L6) · Agent
+Library Lookup Order · Agent Files Governance · Platform Notes · Active
+Projects
+
+---
+
 ## Who I Am
 
 Civil PE at Halff Associates (DFW). Building a freelance AI dev business called **Billington Works**.
@@ -15,7 +55,10 @@ Working email: bbillington@halff.com
 **Never push to GitHub, execute irreversible commands, or take any destructive action without me explicitly saying "go."**
 
 Before any work session:
-1. Use the **Superpowers Brainstorm skill** to analyze the codebase and produce a structured plan
+1. Analyze the codebase and produce a structured plan. Use the
+   **Superpowers Brainstorm skill** where installed; in environments
+   without it (claude.ai/code web sessions), native plan mode covers the
+   same intent.
 2. Present all changes as a numbered list
 3. Wait for **"go"** before writing a single line of code
 
@@ -23,12 +66,21 @@ Violations are a trust issue. When in doubt, stop and ask.
 
 ---
 
-## Context Management — Follow These Thresholds
+## Context Management
 
-- **50% context used** → run `/compact` proactively. Do not wait for auto-compact.
-- **70%** → precision drops. Flag it and ask if I want to compact or start fresh.
-- **85%** → hallucination risk increases. Stop and compact immediately.
-- **90%+** → responses go erratic. Do not proceed without compacting first.
+The old fixed thresholds ("compact at 50%") were written for a 200k
+window. Current default models carry a native 1M window; scale the
+judgement with the window instead of a fixed percentage:
+
+- Compact proactively at a natural task boundary once the session feels
+  past its midpoint, and always with a forward-looking preamble: state
+  what is being worked on next so the summary optimizes for it.
+- Prefer a fresh session over a second compaction. Two compactions deep,
+  the session is running on summaries of summaries.
+- `/rewind` can recover state from before a `/clear`; a nuked session is
+  no longer unrecoverable.
+- Long-session symptoms (instructions skipped, focus drift) are a signal
+  to compact or restart regardless of the percentage shown.
 
 When compacting, always preserve:
 - All file paths modified this session
@@ -38,10 +90,38 @@ When compacting, always preserve:
 
 ---
 
+## Model Routing
+
+House default (updated 2026-07-02, verified against live docs):
+
+- **Sonnet 5** (Claude Code default since June 2026): routine sessions and
+  ALL subagent workers. Native 1M context. Note its tokenizer counts ~30%
+  more tokens for the same text; old token-budget numbers are stale.
+- **Opus 4.8 as orchestrator**: for multi-agent sessions, run the main
+  loop on Opus and let it dispatch `model: sonnet` workers (the
+  `playbook/agents/` frontmatter already pins workers to the sonnet
+  alias). Orchestrator turns are few, worker turns are many, so the cost
+  asymmetry favors this. Opus fast mode is 2x cost for 2.5x speed, cheap
+  enough to sit in.
+- **Haiku**: mechanical extraction, single-document AI extraction.
+- **Fable 5 (Mythos tier)**: heavy jobs only, by explicit decision, never
+  as a default. It burns usage credits at roughly 2x Opus rates and
+  routinely eats 500k+ tokens per task.
+- Keep `model:` in agent frontmatter as version-agnostic aliases (sonnet,
+  opus, haiku), not pinned version IDs.
+
+**Dynamic workflows / "ultracode" budget rule:** multi-agent workflow runs
+can burn a week's quota in a day. Do not trigger one without an explicit
+decision, and set `/usage-credits` spend limits before the first run.
+Check `/usage` per-category breakdown when a session's burn looks wrong.
+
+---
+
 ## Plugins & Tools
 
 ### Superpowers (v5.0.7)
-- MUST invoke Brainstorm before touching any code — no exceptions, even for small changes
+- Where installed (ThinkPad): invoke Brainstorm before touching any code, even for small changes
+- Where not installed (web sessions): plan mode + numbered-list proposal fills the same role; do not skip the gate just because the plugin is absent
 - Use `/simplify` after completing a feature as a post-edit quality check
 
 ### Sequential Thinking MCP
@@ -60,10 +140,25 @@ When compacting, always preserve:
 - Always screenshot on failure for debugging
 - Use `playwright.sync_api` (sync API)
 - Headless mode tied to GUI toggle where applicable
-- `playwright install chromium` — do not use Edge
+
+### Browser channel — depends on the environment (see § Environment Matrix)
+There is no single browser rule. Past versions of this file said both
+"install chromium, never Edge" and "msedge channel only," which are rules
+for two different machines stated as universals. The scoped truth:
+
+- **ThinkPad (local CLI):** scraping pipelines use installed Chromium
+  (`playwright install chromium`). Visual-research rendering (R1-R6, D8)
+  uses `channel="msedge"`: Edge ships with Windows, needs no download,
+  and is the channel the Gala V2 run proved out. Both are legitimate on
+  this machine; pick by task.
+- **claude.ai/code sessions (web/remote container):** use the
+  container's pre-installed Chromium. Do NOT run `playwright install`
+  (the CDN may be blocked and the download is wasted). msedge is not
+  available here. If Playwright cannot reach a target host, that is the
+  network allowlist, not the browser — see § Sandbox / Network.
 
 ### Playwright CLI vs Playwright MCP
-- Use **Playwright CLI** (`@playwright/cli`) for heavy scraping sessions — 75% fewer tokens than MCP
+- Use **Playwright CLI** (`@playwright/cli`) for heavy scraping sessions — 75% fewer tokens than MCP (note: CLI was broken on the ThinkPad Node stack as of 2026-05-10; see `playbook/agents/browser-qa.md` for the working decision tree)
 - Use **Playwright MCP** for quick browser checks and interactive debugging
 - Install CLI: `npm install -g @playwright/cli@latest`
 
@@ -107,7 +202,7 @@ Two-tier PDF strategy — always follow this:
 
 ## Custom Skills
 
-Skill files live in `skills/` in this repo. Reference them at session start or copy into `.claude/skills/` in a project.
+Skills live as `skills/<name>/SKILL.md` directories in this repo (official Agent Skills format since 2026-07-02). Copy a skill DIRECTORY into a project's `.claude/skills/` or `~/.claude/skills/` to install it. Richer templates live at `playbook/templates/skills/`.
 
 ---
 
@@ -122,12 +217,20 @@ For overnight runs or multi-city scraping (Municipal Markets, etc.), fork contex
 
 ## Notifications — When Complete or Blocked
 
-**Desktop (Windows PC):**
+**Preferred (mechanical):** wire the hook templates so notification is
+automatic instead of remembered:
+- `playbook/templates/hooks/desktop-notify-on-blocked.sh` on the
+  `Notification` event
+- `playbook/templates/hooks/desktop-notify-on-complete.sh` on `Stop`
+Both are cross-platform (notify-send / osascript / PowerShell) and wired
+in `playbook/templates/hooks/settings.example.json`.
+
+**Manual fallback (Windows PC, when hooks are not installed):**
 ```powershell
 powershell -Command "Add-Type -AssemblyName System.Windows.Forms; [System.Windows.Forms.MessageBox]::Show('Claude Code needs your input — check browser', 'Claude Code')"
 ```
 
-**Mobile (on phone — use this instead of PowerShell):**
+**Mobile (on phone):**
 Send a push notification through the Claude app's built-in notification system.
 
 **Always notify:**
@@ -143,18 +246,32 @@ Send a push notification through the Claude app's built-in notification system.
 Use for all repo operations: browse files, create PRs, check CI, manage issues.
 Remote endpoint: `https://api.githubcopilot.com/mcp/`
 
-### Fallback — Chrome MCP workaround
-Only if github-mcp-server is unavailable:
-- Open a `github.com` tab in Chrome
-- Use `javascript_tool` via Chrome MCP
-- `fetch()` with `Authorization: token <PAT>` header
-- GET file sha first, then PUT with base64-encoded content
+### Retired — Chrome MCP workaround
+The old fallback (PAT pasted into a Chrome tab's `javascript_tool` fetch)
+is retired as of 2026-07-02. It put a credential into browser-executed
+script and is unnecessary: the official github-mcp-server covers every
+repo operation, is built into claude.ai/code sessions, and plain
+git-over-https works in every environment probed. If github-mcp-server
+is genuinely down, use git directly; do not resurrect the PAT-in-browser
+pattern.
 
 **Never commit destructive changes** (force push, delete branch, rewrite history) without explicit approval.
 
 ---
 
-## Sandbox / Network — github.io Block Fix
+## Sandbox / Network
+
+### Environment Matrix — know which machine you are on before claiming anything is blocked
+
+Three environments run these rules. They have different network realities and different remedies. Every "X is blocked" claim must name the environment it was observed in.
+
+| Environment | Network reality | Remedy when a host is blocked |
+|---|---|---|
+| **ThinkPad local CLI** | Sandbox allowlist from settings files; widenable | Add the domain to `.claude/settings.local.json` (below) and restart the session |
+| **claude.ai/code web/remote container** | Network policy fixed at environment creation; direct fetches to most external hosts fail (`*.github.io`, Reddit, HN, vendor sites); github.com + raw + api, npm, pypi are open | Widen via the environment's network policy or `settings.local.json` where honored, RESTART required; otherwise route the fetch through WebFetch/WebSearch or hand the render to the ThinkPad |
+| **WebFetch / WebSearch tools** | Ride Anthropic's egress, reach arbitrary domains even when curl from the same session cannot | Use them for text retrieval and cross-validation; they cannot render UI (R1 still applies) |
+
+Probed 2026-07-02 from a claude.ai/code remote container: `github.io`, `reddit.com`, `news.ycombinator.com` blocked at the network layer; `registry.npmjs.org`, `pypi.org` open; WebFetch/WebSearch reached all targets. Log new observations in `AGENTS_RESEARCH_BOOTSTRAP.md` § Sandbox reachability log.
 
 ### Symptom
 
@@ -164,7 +281,7 @@ Canvassing-Map CLAUDE.md Rule 1 documents this symptom — the settings fix belo
 
 ### Fix
 
-Create `.claude/settings.local.json` in the project root:
+Create `.claude/settings.local.json` in the project root. **A restart is required; mid-session changes do not take effect.**
 
 ```json
 {
@@ -212,20 +329,13 @@ Add `.claude/settings.local.json` to the repo's `.gitignore`. This file is machi
 | Terminal | `py` not `python` — `py -m pip` not `pip` |
 
 ### Ruff PreToolUse Hook
-Add to Claude Code settings — catches Python issues before they compound:
-```json
-{
-  "hooks": {
-    "PreToolUse": [{
-      "matcher": "Write",
-      "hooks": [{
-        "type": "command",
-        "command": "ruff check --stdin-filename \"$TOOL_INPUT_FILE\" || true"
-      }]
-    }]
-  }
-}
-```
+Catches Python issues before they compound. Use the maintained template
+at `playbook/templates/hooks/ruff-pretooluse.sh`, wired via
+`playbook/templates/hooks/settings.example.json` (matcher
+`Write|Edit|MultiEdit`). Hooks receive JSON on stdin; the template parses
+`tool_input.file_path` from it. An older inline example here used a
+`$TOOL_INPUT_FILE` env var that does not exist in the hooks API; if you
+copied it anywhere, replace it with the template.
 
 ---
 
@@ -271,6 +381,7 @@ Every bump — letter, decimal, or whole — requires updating **all** `?v=` cac
 - Build/run commands belong at the very top
 - Code style rules belong in Ruff/ESLint config, not CLAUDE.md
 - Use `CLAUDE.local.md` (git-ignored) for personal sandbox URLs and test credentials
+- MUST reference harness files by section heading ("standing rules § Sandbox / Network"), never by line number. Line numbers rot on every edit; BB-Notes shipped a wrong one within weeks.
 
 ---
 
@@ -297,8 +408,8 @@ research task that involves competitor UIs, pricing, or visual claims.
 
 If a deliverable will assert anything about a vendor's UI, dashboard
 layout, chart design, color usage, or visual pattern, the agent
-MUST render the actual page through Playwright (msedge channel —
-see Playwright section), save a screenshot locally to a
+MUST render the actual page through Playwright (browser channel per
+§ Browser channel), save a screenshot locally to a
 `screenshots/` directory, and Read the screenshot file back into
 context so the agent actually sees the rendered output. WebFetch
 returns text — it cannot see UI. On JS-heavy marketing pages it
@@ -323,7 +434,7 @@ blog. Never again.
 ### R3. Pre-flight gate research runs with a Playwright smoke test
 
 Before spawning multiple research agents, run a smoke test that
-launches Playwright (msedge), navigates to a known URL, takes a
+launches Playwright (channel per § Browser channel), navigates to a known URL, takes a
 screenshot, and reports OK. If smoke fails, halt and notify the
 user. Don't burn budget spawning agents whose tool dependency is
 broken.
@@ -410,6 +521,13 @@ regression set. Re-run after every change that could affect them.
 Any case that passed a code-path test but failed a visual test means
 the visual test is the one that counts going forward.
 
+**A suite that isn't green on main is not a regression set.** Any
+change that replaces a UI substrate (editor library, framework,
+renderer) must run the FULL existing dogfood suite in the same
+session and modernize or explicitly retire each failing script.
+(Promoted 2026-07-02 from BB-Notes: the CM6 swap left 6 dogfood
+scripts silently failing on CM5 selectors for weeks.)
+
 ### D7. For mapping specifically
 
 Parcel centroid ≠ rooftop. Legal parcel polygons often include
@@ -427,8 +545,8 @@ generally not where the residents live.
 ### D8. Ground-truth scraping via Playwright — no paid APIs
 
 When a user wants address-to-coord ground truth and there is no paid
-geocoder key, use Playwright (msedge channel per the playwright-via-Edge
-rule above) to drive Google Maps or the DCAD property viewer. Extract
+geocoder key, use Playwright (browser channel per § Browser channel)
+to drive Google Maps or the DCAD property viewer. Extract
 the coord from the URL after the site resolves the address. This is
 the canonical pattern for the "compare stored coord vs. real location"
 loop on this account.
@@ -532,8 +650,9 @@ unless the user overrides specific items.
 
 ### S6. Senior-review agent definition
 
-The senior-reviewer agent is `superpowers:senior-product-review`
-(see `agents/senior-product-review.md` for the playbook). It runs
+The senior-reviewer agent is `agents/senior-product-review.md` in CCC
+(a CCC playbook, not part of the Superpowers plugin; an older version of
+this rule misnamed it with a `superpowers:` namespace). It runs
 the three lenses above. Invoke after a non-minor change is
 implementer-complete and before the user is asked to test.
 
@@ -661,6 +780,57 @@ prompt quality — the reviewer can only check what it's asked.
 
 ---
 
+## Shipping Lessons — Promoted from Project Post-Mortems
+
+Durable rules promoted from project UPDATE_TO_CCC files. Each carries its
+source and date. Terse on purpose; the source repo holds the full story.
+
+### L1. A stripped prefix is a data-loss bug waiting for its first save
+
+Whenever a view strips or rewrites a prefix/suffix for display or editing
+(frontmatter blocks, headers, BOMs), every save path must provably
+re-attach it, and the dogfood suite needs a round-trip fixture:
+open, edit, save, byte-compare the untouched region. (BB-Notes 2026-07-02:
+first manual save of any note with frontmatter silently deleted it.)
+
+### L2. Before deleting a "redundant" feature, enumerate what ONLY it does
+
+List the surface's capabilities and diff against the surviving surfaces.
+Remove only after the survivors cover the diff. (BB-Notes 2026-07-02: the
+"redundant" split preview was the only surface rendering pasted images.)
+
+### L3. A shipped cron workflow with zero runs is a scheduling bug, not lag
+
+After shipping any scheduled GitHub Action, verify a nonzero run count
+within one interval. Zero runs means the scheduler never armed
+(workflow files landed via API commits are the known trigger); a human
+manual dispatch from the Actions tab both tests the pipeline and wakes
+the scheduler. (BB-Notes 2026-07-02: two */30 crons sat "active" 13+
+hours with zero runs.)
+
+### L4. `[hidden]` loses to any author `display` rule
+
+Add the global reset `[hidden] { display: none !important; }` to every
+project stylesheet. (BB-Notes 2026-07-01: bug class hit twice in one
+repo; app shell rendered behind the auth gate, hidden header ghosted a
+95px gap.)
+
+### L5. CodeMirror 6: block decorations come from StateFields
+
+Widget/replace decorations with `block: true` must be provided by a
+StateField (`provide: f => EditorView.decorations.from(f)`); only inline
+marks and line decorations belong in a ViewPlugin. The error surfaces at
+runtime, not build time. (BB-Notes 2026-07-01: cost one rebuild cycle.)
+
+### L6. If you fetch file bodies anyway, keep them
+
+A Contents-API tree walk that fetches bodies to parse headers has already
+paid for full-text search and backlinks; retain the text instead of
+re-fetching. No index library needed under ~1MB corpus. (BB-Notes
+2026-07-01. Generalizes to any GitHub-backed dashboard.)
+
+---
+
 ## Agent Library Lookup Order — Non-Negotiable
 
 When a session needs an agent for a common task (code review, research,
@@ -668,7 +838,7 @@ data viz, doc writing, security scan, deploy verify, etc.), search in
 this order BEFORE drafting a new agent from scratch:
 
 1. **CCC core library** — `claude-code-context/playbook/agents/<name>.md`.
-   ~12 cross-project reusable agents. Invoke as-is, OR read as a starting
+   14 cross-project reusable agents. Invoke as-is, OR read as a starting
    point and augment inline for task-specific needs (the augmentation
    does not need to be persisted unless the same augmentation recurs).
 2. **CCC engagement-specific** — `claude-code-context/agents/<name>.md`
@@ -707,14 +877,39 @@ explain the bypass in the commit message body.
 
 ---
 
+## Platform Notes — verified 2026-07-02
+
+Features that changed how this harness should be used, verified against
+live Anthropic docs. Full detail in `playbook/research/anthropic.md`.
+
+- **Path-scoped rules:** `.claude/rules/*.md` with `paths:` frontmatter
+  load only when Claude touches matching files. The sanctioned home for
+  conditional guidance that used to bloat CLAUDE.md files.
+- **Auto memory:** Claude maintains
+  `~/.claude/projects/<project>/memory/MEMORY.md` itself (first 200
+  lines load each session). Durable project facts belong there or in
+  CLAUDE.md, not in chat history.
+- **Hook matchers:** hyphenated matchers exact-match since v2.1.195
+  (June 2026). `mcp__foo-bar` no longer substring-matches; use
+  `mcp__foo-bar__.*`.
+- **Headless/CI:** `claude -p` with `--bare` (skip all customization for
+  fast CI startup) and `--max-budget-usd` (hard cost ceiling).
+- **Plugins are the distribution unit** for skills/agents/hooks/MCP
+  bundles. CCC's raw-URL fetch ritual predates them; see the plugin
+  packaging under `plugin/` when it lands.
+- **Skills are cross-tool:** the Agent Skills standard is supported by
+  many non-Claude tools now. Write skills harness-neutral where cheap.
+
+---
+
 ## Active Projects
 
 | Project | Repo | Notes |
 |---------|------|-------|
-| Canvassing App | `brentbillington-ship-it/Canvassing-Map` | GitHub Pages + Google Sheets + Leaflet.js, pw: choochoo |
+| Canvassing App | `brentbillington-ship-it/Canvassing-Map` | GitHub Pages + Google Sheets + Leaflet.js, dev pw: in CLAUDE.local.md |
 | Municipal Markets | `brentbillington-ship-it/Municipal-Markets` | Halff internal only — zero Billington Works branding |
-| Signs Map | — | Apps Script, pw: choochoo |
+| Signs Map | — | Apps Script, dev pw: in CLAUDE.local.md |
 
 ---
 
-*Last updated: April 2026*
+*Last updated: 2026-07-02 (CT) — harness review session*

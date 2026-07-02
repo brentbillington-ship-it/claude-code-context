@@ -323,7 +323,7 @@ const PORT = 8765;
 
     if (loginVisible) {
       console.log('Login screen detected — entering password...');
-      await page.type('#pw-input', 'choochoo');
+      await page.type('#pw-input', DEV_PW); // DEV_PW from CLAUDE.local.md — never commit the literal
       await page.click('#pw-btn');
       await page.waitForTimeout(5000);
     }

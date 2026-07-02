@@ -8,10 +8,10 @@ S = under 1 hour. M = 1–4 hours. L = a day or more.
 
 ## P0 — Quick wins (do first thing in the morning)
 
-### 1. Ship the six hook scripts
+### 1. Ship the seven hook scripts
 - **What:** Add `hooks/` scripts for: formatter (Ruff/Prettier/Black), rm-rf guard (PreToolUse Bash), secret-scan (PreToolUse Write/Edit), SubagentStop queue pump, Stop desktop-notify, SessionStart git-context injector.
 - **Why:** Turns advisory CLAUDE.md rules into deterministic enforcement. Eliminates the rm-rf horror-story failure mode. Makes CCC production-grade.
-- **Effort:** M (2–3h for all six, most are <30 lines each).
+- **Effort:** M (2–3h for all seven, most are <30 lines each).
 - **Impact:** High.
 - **Risk:** Low if each hook is ≤200ms and no PostToolUse hook calls Claude. Follow ANTI_PATTERNS.md #1 strictly.
 - **Sources:** `anti-patterns.md` #1/#3, `github.md` (disler), `reddit.md` signal #3.

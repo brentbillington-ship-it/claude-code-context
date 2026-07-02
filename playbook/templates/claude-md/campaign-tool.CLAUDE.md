@@ -11,7 +11,7 @@ clasp push                          # deploy code to Google
 py -m scripts.sync_voterfile        # refresh voter data in Sheet
 ```
 
-Passwords: `choochoo` (dev). Never committed. Kept in `CLAUDE.local.md`.
+Passwords: dev password lives in `CLAUDE.local.md`. Never committed.
 
 ---
 

@@ -1,5 +1,8 @@
 # Tool Catalog Scout — Report
 
+*Refreshed 2026-07-02 (CT) by the harness-review session. verify-by: 2026-10-01 — run the refresh procedure in EXPANSION_QUEUE.md if past due.*
+
+
 *Compiled 2026-04-22 for Brent. Baseline stack: Superpowers v5.0.7, Sequential Thinking, Context7, pdf-mcp, google_workspace_mcp, github-mcp-server, Chrome MCP, Playwright CLI + Playwright MCP, CLASP.*
 
 ## Ranking method
@@ -99,3 +102,13 @@ Mitigation: enable MCP servers per-project in `.claude/settings.json` rather tha
 
 ---
 *Top-3 actions: install Serena today; install autocad-mcp next CAD session; pick 3 wshobson plugins (essentials + security-hardening + git-ops) and prune.*
+
+---
+
+## Delta — 2026-07-02 refresh
+
+- **Token-budget math above is stale twice over**: MCP Tool Search (deferred tool loading) cuts upfront tool-definition cost dramatically, and Sonnet 5's tokenizer counts ~30% more tokens for the same text. Re-measure before trusting the April numbers.
+- **Model routing changed**: see standing rules § Model Routing (Sonnet 5 default / Opus 4.8 orchestrator + fast mode / Haiku mechanical / Fable 5 heavy-only on usage credits).
+- **Plugin ecosystem matured**: plugins now bundle LSP servers, monitors, themes; auto-load from .claude/skills without a marketplace (v2.1.157). wshobson/agents went multi-harness. Official marketplace directory: anthropics/claude-plugins-official.
+- **New cost controls worth wiring**: /usage per-category breakdown (May 22), /usage-credits spend limits (May 19), --max-budget-usd for headless runs.
+- Catalog rankings above (Serena, Exa, Firecrawl, autocad-mcp) not re-validated this refresh; re-rank during the next tool-selection session. UNVERIFIED whether April star/adoption numbers still hold for the MCP servers.

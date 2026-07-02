@@ -1,7 +1,30 @@
 {
-  "_comment": "Example settings.json wiring for the six hook scripts. Place at .claude/settings.json or ~/.claude/settings.json. Replace $CCC with the absolute path to your claude-code-context checkout.",
+  "_comment": "Example settings.json wiring for the eleven hook scripts (7 original + 4 added 2026-07-02). Place at .claude/settings.json or ~/.claude/settings.json. Replace $CCC with the absolute path to your claude-code-context checkout. git-prepare-commit-msg.sh is a git hook, not a Claude hook — install it separately per its header.",
+
+  "_matcher_note": "Since v2.1.195 (June 2026) hyphenated matchers exact-match instead of substring-matching: 'mcp__foo-bar' must be written 'mcp__foo-bar__.*'. The plain tool-name matchers below are unaffected.",
+
+  "permissions": {
+    "_comment": "Mechanical backstop for the action gate: pushes and destructive git always prompt, even under acceptEdits. Deny rules for the worst cases.",
+    "ask": [
+      "Bash(git push*)",
+      "Bash(git reset --hard*)",
+      "Bash(git clean*)"
+    ],
+    "deny": [
+      "Bash(git push --force*)",
+      "Bash(git push -f*)"
+    ]
+  },
 
   "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          { "type": "command", "command": "$CCC/playbook/templates/hooks/session-start-context.sh" }
+        ]
+      }
+    ],
+
     "PreToolUse": [
       {
         "matcher": "Write|Edit|MultiEdit",
@@ -13,7 +36,8 @@
       {
         "matcher": "Bash",
         "hooks": [
-          { "type": "command", "command": "$CCC/playbook/templates/hooks/rm-rf-guard.sh" }
+          { "type": "command", "command": "$CCC/playbook/templates/hooks/rm-rf-guard.sh" },
+          { "type": "command", "command": "$CCC/playbook/templates/hooks/py-pip-guard.sh" }
         ]
       }
     ],
@@ -22,7 +46,8 @@
       {
         "hooks": [
           { "type": "command", "command": "$CCC/playbook/templates/hooks/checkpoint-autosave.sh" },
-          { "type": "command", "command": "$CCC/playbook/templates/hooks/desktop-notify-on-complete.sh" }
+          { "type": "command", "command": "$CCC/playbook/templates/hooks/desktop-notify-on-complete.sh" },
+          { "type": "command", "command": "$CCC/playbook/templates/hooks/dogfood-suite-gate.sh", "timeout": 300 }
         ]
       }
     ],
@@ -45,8 +70,13 @@
   },
 
   "_anti_patterns_honored": [
-    "ANTI_PATTERNS.md A1 — no PostToolUse hook invokes Claude",
+    "ANTI_PATTERNS.md A1 — no PostToolUse hook invokes Claude; dogfood-suite-gate guards re-entry via stop_hook_active",
     "ANTI_PATTERNS.md A5 — rm-rf guard even in non-YOLO sessions",
     "ANTI_PATTERNS.md A11 — hooks redirect stderr; test with --debug"
+  ],
+
+  "_opt_in_notes": [
+    "dogfood-suite-gate.sh is a no-op unless the project defines .claude/dogfood.cmd (D6 green-on-main rule)",
+    "py-pip-guard.sh is a no-op on machines without the py launcher (Linux/macOS containers)"
   ]
 }

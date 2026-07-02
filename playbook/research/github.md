@@ -1,5 +1,8 @@
 # GitHub Scout — Report
 
+*Refreshed 2026-07-02 (CT) by the harness-review session. verify-by: 2026-10-01 — run the refresh procedure in EXPANSION_QUEUE.md if past due.*
+
+
 Survey date: 2026-04-22. Scope: real repos with production-looking `.claude/` (agents, skills, commands, hooks, settings.json). Rate-limited MCP `get_file_contents` blocked on external repos; fell back to raw.githubusercontent.com for READMEs and LICENSE files. Star counts are GitHub API values (late Apr 2026) and mix organic signal with heavy viral/SEO growth — interpret accordingly.
 
 ## Starter list — quick take
@@ -98,3 +101,16 @@ Ranked by signal-to-noise, not raw stars.
 15. `Piebald-AI/claude-code-lsps` — LSP-as-plugin pattern, underexplored. 2026-04-22.
 
 Wave 2 should clone 1–6 locally and inspect `.claude/` trees; others can stay READMEs-only unless a specific pattern is needed.
+
+---
+
+## Delta — 2026-07-02 refresh (star counts checked live)
+
+April leaders all alive and still current: obra/superpowers 244k stars (obra/superpowers-skills now ARCHIVED); wshobson/agents 37.4k, rebranded as a multi-harness plugin marketplace (Claude Code + Codex + Cursor + Copilot + Gemini CLI); diet103 showcase 9.7k; disler/hooks-mastery 3.8k; nizos/tdd-guard 2.2k.
+
+New or newly dominant since April:
+- **DietrichGebert/ponytail** — 71k stars, created June 12. ~100-line YAGNI constraint skill; independent benchmark: ~54% less code, 20% lower cost (https://blog.stackademic.com/does-the-ponytail-skill-actually-improve-claude-code-or-just-cut-its-line-count-9e2f31a3b32a). The defining June artifact: constraint-skills over capability-skills.
+- **nexu-io/open-design** — 74k stars (Apr 28): local design-skill wave anchor (with huashu-design 20.7k, Nutlope/hallmark 3.5k).
+- **cobusgreyling/loop-engineering** — 4.8k (Jun 9): prompting loops over prompts; Boris Cherny "I write loops now" framing.
+- **omnigent-ai/omnigent** — 6k (Jun 11): meta-harness orchestrating multiple agent CLIs with policy + sandbox enforcement.
+- Marketplace scale: 192 marketplaces / 2,529 plugins counted June 24 (claudemarketplaces.com); official directory https://github.com/anthropics/claude-plugins-official.

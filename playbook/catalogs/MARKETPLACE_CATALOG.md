@@ -2,7 +2,7 @@
 
 CC plugin marketplaces worth subscribing to, with trust notes.
 
-Source basis: `playbook/research/github.md`, `playbook/research/tools.md`, `playbook/research/anti-patterns.md`.
+Source basis: `playbook/research/github.md`, `playbook/research/tools.md`, `playbook/research/sources/anti-patterns.md`.
 
 ---
 

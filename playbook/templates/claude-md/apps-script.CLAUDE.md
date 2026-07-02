@@ -18,7 +18,7 @@ Stable versioned deployment ID must not change. URL in `config.js` depends on it
 1. MUST use CLASP. Never paste code into the Apps Script browser editor.
 2. MUST wrap equality checks: `String(a) === String(b)`.
 3. MUST NOT create a new deployment unless explicitly told to. Keep the stable URL.
-4. MUST keep the dev password (`choochoo`) out of `apps_script.js` — use PropertiesService.
+4. MUST keep the dev password (see `CLAUDE.local.md`) out of `apps_script.js` — use PropertiesService.
 5. MUST NOT read Sheet data via fetch-from-web patterns when `google_workspace_mcp` is available.
 
 ---

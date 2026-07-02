@@ -1,0 +1,9 @@
+{
+  "name": "ccc",
+  "version": "0.1.0",
+  "description": "Brent Billington's Claude Code operating system: standing-rules guard hooks, cross-project agents, and house skills (smallest-honest-change, ccc-doctor, ccc-promote, pdf-extract, scraper). Assembled from the claude-code-context repo by tools/build-plugin.sh.",
+  "author": {
+    "name": "Brent Billington",
+    "url": "https://github.com/brentbillington-ship-it/claude-code-context"
+  }
+}

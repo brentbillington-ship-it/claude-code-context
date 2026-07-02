@@ -1,6 +1,6 @@
 ---
 name: data-extractor
-description: Extract structured data from unstructured inputs (PDFs, HTML, screenshots, scanned plansets) into a defined schema. Use when the user provides a batch needing structured rows, when a scraping pipeline needs the HTML→rows step, or when a QTO audit needs to convert a plan-set PDF into a quantity table. Two-tier PDF handling (text-extract first, vision fallback for scanned), null-over-guess discipline, schema validation, run manifest. References `skills/pdf-extract.md` and `playbook/templates/skills/scraping-pipeline-boilerplate/SKILL.md`.
+description: Extract structured data from unstructured inputs (PDFs, HTML, screenshots, scanned plansets) into a defined schema. Use when the user provides a batch needing structured rows, when a scraping pipeline needs the HTML→rows step, or when a QTO audit needs to convert a plan-set PDF into a quantity table. Two-tier PDF handling (text-extract first, vision fallback for scanned), null-over-guess discipline, schema validation, run manifest. References `skills/pdf-extract/SKILL.md` and `playbook/templates/skills/scraping-pipeline-boilerplate/SKILL.md`.
 tools: Read, Glob, Grep, Bash, Write
 model: sonnet
 ---

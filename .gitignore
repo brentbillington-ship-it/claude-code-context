@@ -4,3 +4,14 @@
 
 # Binary archives — playbook snapshots are unzipped in-tree; the .zip is redundant
 *.zip
+
+# Machine-local secret denylist for the pre-commit scan — never commit
+.githooks/secret-denylist.local
+
+# Personal memory file with local URLs/credentials — never commit
+CLAUDE.local.md
+
+# Assembled plugin payload — built by tools/build-plugin.sh from canonical sources
+plugin/skills/
+plugin/agents/
+plugin/hooks/scripts/

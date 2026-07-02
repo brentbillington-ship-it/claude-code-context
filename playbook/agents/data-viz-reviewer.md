@@ -9,7 +9,7 @@ model: sonnet
 
 > **Purpose:** Review charts, dashboards, and business-analytics visualizations for correctness, clarity, accessibility, and anti-patterns. Implementation review pairs with `/review`.
 
-> **See also:** [`agents/family-office-tracker/DATAVIZ.md`](../../../agents/family-office-tracker/DATAVIZ.md) — engagement-specific data-viz agent for the family-office tracker (vendor competitive review with R1 rendered screenshots). This file is the generic cross-project version; that file is the bespoke one.
+> **See also:** [`agents/family-office-tracker/DATAVIZ.md`](../../agents/family-office-tracker/DATAVIZ.md) — engagement-specific data-viz agent for the family-office tracker (vendor competitive review with R1 rendered screenshots). This file is the generic cross-project version; that file is the bespoke one.
 
 ## When to Invoke
 - Before shipping any chart to a client deliverable

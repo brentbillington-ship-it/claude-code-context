@@ -1,5 +1,8 @@
 # Data Viz + Maps — Reference Index
 
+*Refreshed 2026-07-02 (CT). verify-by: 2026-10-01*
+
+
 > **Status:** This file stands in for full scout reports. Three scout runs hit stream-idle timeouts before producing full reports; the two agent files (`data-viz-reviewer.md`, `maps-tooling-reviewer.md`) were written directly from domain knowledge. This file captures the sources those agents lean on, so any claim in the agent checklists can be chased down.
 
 Last updated: 2026-04-22.

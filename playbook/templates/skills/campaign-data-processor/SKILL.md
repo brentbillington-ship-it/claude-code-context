@@ -26,7 +26,7 @@ Skill for the Canvassing-Map project family (see CLAUDE_CODE_STANDING_RULES.md Â
 ## Non-negotiables
 
 - Voter-PII handling: no PII in logs, no PII in commit messages. All credentials via env vars.
-- Password for Canvassing-Map dev: `choochoo` (per standing rules; keep in `CLAUDE.local.md`, never committed).
+- Password for Canvassing-Map dev: in `CLAUDE.local.md`, never committed.
 - Timestamps in Central Time for any output handed to field staff.
 
 ## Pairs with

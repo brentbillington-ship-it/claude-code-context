@@ -1,5 +1,8 @@
 # Family Office Tooling — Cross-Project Reference
 
+*Refreshed 2026-07-02 (CT). verify-by: 2026-10-01*
+
+
 *Generalizable findings from the Gala Holdings Tracker research run (2026-05-05). Reusable across future family-office, wealth-tracking, finance-dashboard, and high-net-worth-tooling engagements. Specifics are kept private to the engagement repo; this file holds patterns that survive client boundaries.*
 
 ---

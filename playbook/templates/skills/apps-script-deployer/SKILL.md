@@ -33,7 +33,7 @@ User-invocable. Matches the CLASP workflow in CLAUDE_CODE_STANDING_RULES.md § C
 - Never manually paste into the browser editor. Always CLASP. Standing rules hard rule.
 - Never create a new deployment unless explicitly instructed.
 - Equality checks: wrap both sides in `String()` (per standing rules § Code Delivery).
-- Passwords (`choochoo` for Canvassing/Signs Map) via `CLAUDE.local.md`; never in `apps_script.js`.
+- Passwords for Canvassing/Signs Map via `CLAUDE.local.md`; never in `apps_script.js`.
 
 ## Pairs with
 

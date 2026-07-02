@@ -1,5 +1,7 @@
 # Gap Analysis — CCC vs. State-of-the-Art (April 2026)
 
+> **Historical snapshot (2026-04-22).** Line counts, file locations, and gap statuses below describe the repo as it stood that day. Several gaps have since been closed and paths reorganized (agents moved to `playbook/agents/`, standing rules grew past 700 lines). Read as the baseline the 2026-07-02 harness review measured progress against, not as current state.
+
 Honest, file-level comparison of Brent's current CCC repo against what high-quality setups are doing. Structured as **strengths to keep**, **gaps to close**, and **things CCC already does better than most**.
 
 CCC baseline files audited:

@@ -1,5 +1,8 @@
 # Reddit Scout — Report
 
+*Refreshed 2026-07-02 (CT) by the harness-review session. verify-by: 2026-10-01 — run the refresh procedure in EXPANSION_QUEUE.md if past due.*
+
+
 Scope: r/ClaudeAI, r/ClaudeCode, r/LocalLLaMA, r/ChatGPTCoding, last ~6 months (through 2026-04-22). Note: direct Reddit fetches were blocked for this agent, so signals below were gathered via web-indexed summaries of Reddit threads plus community blogs that quote them. Primary Reddit URLs are provided where search returned them; otherwise the best-available proxy source is cited and marked "(proxy)".
 
 ## Top signals (ranked)
@@ -78,3 +81,16 @@ Scope: r/ClaudeAI, r/ClaudeCode, r/LocalLLaMA, r/ChatGPTCoding, last ~6 months (
 ---
 
 Caveats: direct reddit.com WebFetch was blocked in this agent's environment; findings rely on search-index summaries of Reddit threads and third-party recaps that quote them. Where exact permalinks were returned by search they are cited; otherwise the most-credible proxy is labeled "(proxy)". Signal quality is high on themes consistently echoed across 3+ sources.
+
+---
+
+## Delta — 2026-07-02 refresh
+
+Method note: direct Reddit access still blocked from the sandbox; deltas below come from WebSearch-indexed text and secondary coverage. Individual attributions UNVERIFIED.
+
+1. **CLAUDE.md <200 lines: softened, not reversed.** The harness's own too-long warning now scales with the model context window (changelog June 8), and `.claude/rules/` conditional files absorb what used to bloat CLAUDE.md. The framing is now a four-way split: CLAUDE.md = always-known facts, skill = on-demand procedure, hook = harness-enforced rule, subagent = isolated side-room (https://www.buildthisnow.com/blog/tools/claude-code-skills-vs-subagents-vs-hooks).
+2. **"Compact at ~80%" is obsolete as stated.** With 1M-window defaults the advice split: compact proactively at a task boundary with a forward-looking preamble, or just start fresh sessions. `/rewind` recovers pre-`/clear` state (June 24). https://claudefa.st/blog/guide/mechanics/context-management
+3. **Model routing became three-tier.** Sonnet 5 default; Opus 4.8 + xhigh effort + cheap fast mode for hard tasks; Fable 5 reserved for heavy jobs on usage credits (reports of 500k-1M tokens per task).
+4. **Top complaint May-June: usage limits and token burn**, aggravated by dynamic workflows and Fable. Partially answered by doubled 5-hour limits (May 6) and separate monthly credits for non-interactive use (June 15, single source, UNVERIFIED).
+5. **Constraint skills are the June meme that stuck**: ponytail (~100-line YAGNI skill, 71k stars in 3 weeks) validated "tell it what NOT to build" as the highest-leverage skill genre. CCC's house version: `skills/smallest-honest-change/`.
+6. Hooks-over-prose consensus unchanged and reinforced by auto mode (classifier enforcement outside the model).

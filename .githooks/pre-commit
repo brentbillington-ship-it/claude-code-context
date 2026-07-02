@@ -1,52 +1,58 @@
 #!/usr/bin/env bash
 # claude-code-context/.githooks/pre-commit
 #
-# Enforces AGENT_MANAGER.md Lifecycle Rules: any commit that adds or modifies
-# an agent playbook file MUST also modify AGENT_MANAGER.md (registry table or
-# changelog row).
+# Three guards, in order:
+#   1. AGENT_MANAGER drift guard — any commit touching an agent playbook file
+#      MUST also modify AGENT_MANAGER.md (registry row + changelog).
+#   2. Registry path validation — every ACTIVE/DORMANT/DRAFT row in
+#      AGENT_MANAGER.md must point at a file that exists in the commit.
+#      (Added 2026-07-02 after 4 phantom rows shipped undetected.)
+#   3. Secret scan — added lines in the staged diff are checked against
+#      credential patterns and an optional local denylist.
 #
-# Bypass with intent: `git commit --no-verify` or `CCC_SKIP_AGENT_HOOK=1 git commit`.
-# The bypass should appear in the commit message body as an explicit reason.
+# One-time arming on a fresh clone (this file must also be executable):
+#   git config core.hooksPath .githooks
+#
+# Bypass with intent (explain in the commit message body):
+#   CCC_SKIP_AGENT_HOOK=1   skips guards 1 and 2
+#   CCC_SKIP_SECRET_SCAN=1  skips guard 3
+#   git commit --no-verify  skips everything
 
 set -euo pipefail
-
-if [[ "${CCC_SKIP_AGENT_HOOK:-}" == "1" ]]; then
-  echo "[pre-commit] CCC_SKIP_AGENT_HOOK=1 — skipping agent-registry enforcement." >&2
-  exit 0
-fi
-
-# Patterns the hook treats as "agent playbook files".
-agent_globs=(
-  'AGENTS_*.md'
-  'agents/'              # any path starting with agents/ (engagement-specific bundles)
-  'playbook/agents/'     # core agent library (cross-project)
-  '.claude/agents/'      # modern convention, future-proofing
-)
 
 manager_file='AGENT_MANAGER.md'
 
 # Files staged for commit (added, modified, renamed, deleted).
 staged=$(git diff --cached --name-only --diff-filter=ACMRD)
 
-# Find any staged agent file.
-agent_hits=()
-while IFS= read -r f; do
-  [[ -z "$f" ]] && continue
-  for pat in "${agent_globs[@]}"; do
-    case "$f" in
-      $pat*) agent_hits+=("$f"); break ;;
-      $pat)  agent_hits+=("$f"); break ;;
-    esac
-  done
-done <<<"$staged"
+# ---------------------------------------------------------------------------
+# Guard 1 — AGENT_MANAGER drift guard
+# ---------------------------------------------------------------------------
+if [[ "${CCC_SKIP_AGENT_HOOK:-}" == "1" ]]; then
+  echo "[pre-commit] CCC_SKIP_AGENT_HOOK=1 — skipping agent-registry enforcement." >&2
+else
+  # Patterns the hook treats as "agent playbook files".
+  agent_globs=(
+    'AGENTS_*.md'
+    'agents/'              # any path starting with agents/ (engagement-specific bundles)
+    'playbook/agents/'     # core agent library (cross-project)
+    '.claude/agents/'      # modern convention, future-proofing
+  )
 
-if [[ ${#agent_hits[@]} -eq 0 ]]; then
-  exit 0
-fi
+  agent_hits=()
+  while IFS= read -r f; do
+    [[ -z "$f" ]] && continue
+    for pat in "${agent_globs[@]}"; do
+      case "$f" in
+        $pat*) agent_hits+=("$f"); break ;;
+        $pat)  agent_hits+=("$f"); break ;;
+      esac
+    done
+  done <<<"$staged"
 
-# An agent file is staged. Require AGENT_MANAGER.md to also be staged.
-if ! grep -qxF "$manager_file" <<<"$staged"; then
-  cat >&2 <<EOF
+  if [[ ${#agent_hits[@]} -gt 0 ]]; then
+    if ! grep -qxF "$manager_file" <<<"$staged"; then
+      cat >&2 <<EOF
 
 [pre-commit] BLOCKED — AGENT_MANAGER.md drift guard
 
@@ -69,13 +75,13 @@ To proceed, EITHER:
      and explain the bypass in the commit message body.
 
 EOF
-  exit 1
-fi
+      exit 1
+    fi
 
-# AGENT_MANAGER.md IS staged — soft-check that the diff isn't trivial whitespace.
-manager_diff_lines=$(git diff --cached --numstat -- "$manager_file" | awk '{print $1+$2}')
-if [[ "${manager_diff_lines:-0}" -lt 2 ]]; then
-  cat >&2 <<EOF
+    # AGENT_MANAGER.md IS staged — soft-check that the diff isn't trivial whitespace.
+    manager_diff_lines=$(git diff --cached --numstat -- "$manager_file" | awk '{print $1+$2}')
+    if [[ "${manager_diff_lines:-0}" -lt 2 ]]; then
+      cat >&2 <<EOF
 
 [pre-commit] WARNING — $manager_file diff is suspiciously small ($manager_diff_lines lines).
 A genuine registry update typically touches the registry table AND adds a
@@ -83,6 +89,98 @@ changelog row (>=2 lines). If you are only fixing whitespace, set
 CCC_SKIP_AGENT_HOOK=1 to bypass. Continuing.
 
 EOF
+    fi
+  fi
+
+  # -------------------------------------------------------------------------
+  # Guard 2 — Registry path validation
+  # Runs whenever AGENT_MANAGER.md or any agent file is part of the commit.
+  # Parses registry rows from the STAGED version of AGENT_MANAGER.md and
+  # requires each non-RETIRED row's path to exist in the staged tree.
+  # -------------------------------------------------------------------------
+  if [[ ${#agent_hits[@]} -gt 0 ]] || grep -qxF "$manager_file" <<<"$staged"; then
+    dead_paths=()
+    while IFS= read -r row_path; do
+      [[ -z "$row_path" ]] && continue
+      # Exists in the staged index?
+      if ! git cat-file -e ":$row_path" 2>/dev/null; then
+        dead_paths+=("$row_path")
+      fi
+    done < <(git show ":$manager_file" 2>/dev/null \
+      | grep -E '^\| `[^`]+` \| \*\*(ACTIVE|DORMANT|DRAFT)\*\*' \
+      | sed -E 's/^\| `([^`]+)`.*/\1/')
+
+    if [[ ${#dead_paths[@]} -gt 0 ]]; then
+      cat >&2 <<EOF
+
+[pre-commit] BLOCKED — registry path validation
+
+These $manager_file registry rows point at files that do not exist in
+this commit:
+$(printf '  - %s\n' "${dead_paths[@]}")
+
+Fix the row (correct the path, or set status RETIRED), or fix the file
+location, then re-stage. Bypass: CCC_SKIP_AGENT_HOOK=1 git commit.
+
+EOF
+      exit 1
+    fi
+  fi
+fi
+
+# ---------------------------------------------------------------------------
+# Guard 3 — Secret scan over ADDED lines of the staged diff
+# Patterns mirror playbook/templates/hooks/secret-scan-preedit.sh.
+# Extra machine-local literals (e.g. app passwords) go one-per-line in
+# .githooks/secret-denylist.local — git-ignored, never committed.
+# ---------------------------------------------------------------------------
+if [[ "${CCC_SKIP_SECRET_SCAN:-}" == "1" ]]; then
+  echo "[pre-commit] CCC_SKIP_SECRET_SCAN=1 — skipping secret scan." >&2
+else
+  added=$(git diff --cached --diff-filter=ACMR | grep -E '^\+' | grep -Ev '^\+\+\+' || true)
+
+  secret_patterns=(
+    'ghp_[A-Za-z0-9]{36}'
+    'github_pat_[A-Za-z0-9_]{22,}'
+    'sk-ant-[A-Za-z0-9_-]{20,}'
+    'sk-[A-Za-z0-9]{40,}'
+    'AKIA[0-9A-Z]{16}'
+    'AIza[0-9A-Za-z_-]{35}'
+    'xox[baprs]-[A-Za-z0-9-]{10,}'
+    'glpat-[A-Za-z0-9_-]{20,}'
+    '-----BEGIN (RSA |EC |OPENSSH )?PRIVATE KEY-----'
+  )
+
+  hits=""
+  for pat in "${secret_patterns[@]}"; do
+    m=$(grep -E -e "$pat" <<<"$added" || true)
+    [[ -n "$m" ]] && hits+="$m"$'\n'
+  done
+
+  denylist="$(git rev-parse --show-toplevel)/.githooks/secret-denylist.local"
+  if [[ -f "$denylist" ]]; then
+    while IFS= read -r literal; do
+      [[ -z "$literal" || "$literal" == \#* ]] && continue
+      m=$(grep -F -e "$literal" <<<"$added" || true)
+      [[ -n "$m" ]] && hits+="$m"$'\n'
+    done <"$denylist"
+  fi
+
+  if [[ -n "${hits//[$'\n' ]/}" ]]; then
+    cat >&2 <<EOF
+
+[pre-commit] BLOCKED — secret scan
+
+Added lines in this commit match credential patterns or the local
+denylist. First matches:
+$(head -5 <<<"$hits" | cut -c1-120 | sed 's/^/  /')
+
+Move the value to CLAUDE.local.md or an environment secret and commit a
+pointer instead. Bypass (false positive only): CCC_SKIP_SECRET_SCAN=1.
+
+EOF
+    exit 1
+  fi
 fi
 
 exit 0

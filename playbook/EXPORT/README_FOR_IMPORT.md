@@ -6,6 +6,8 @@ This bundle is the output of an overnight multi-agent Claude Code workflow-resea
 **Branch:** `claude/code-optimization-research-P2uAF`
 **Built:** 2026-04-22
 
+> **Superseded layout (flagged 2026-07-02).** The paths below describe the April bundle as originally exported. The tree has since been reorganized: `playbook/templates/agents/` became `playbook/agents/` (now 14 files), the plan/checkpoint/brief files and `ccc-upgrade-proposals/` (11 proposals) moved under `playbook/sessions/2026-04-22/`, and `research/anti-patterns.md` moved to `research/sources/anti-patterns.md`. If importing today, translate paths accordingly; the copy-to destinations in the tables are still the right targets.
+
 ---
 
 ## TL;DR — what to do on the new machine

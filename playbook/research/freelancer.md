@@ -1,5 +1,8 @@
 # Freelancer Scout — Report
 
+*Refreshed 2026-07-02 (CT). verify-by: 2026-10-01*
+
+
 Scope: how indie devs, freelancers, and small agencies are wrapping Claude Code around client work as of Apr 2026. Sources are a mix of Reddit/IH discussions, AI-coding blogs, and GitHub template repos. Paraphrased throughout.
 
 ## Context-isolation patterns for multi-client work
