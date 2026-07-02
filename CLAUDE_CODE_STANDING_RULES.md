@@ -271,6 +271,7 @@ Every bump — letter, decimal, or whole — requires updating **all** `?v=` cac
 - Build/run commands belong at the very top
 - Code style rules belong in Ruff/ESLint config, not CLAUDE.md
 - Use `CLAUDE.local.md` (git-ignored) for personal sandbox URLs and test credentials
+- MUST reference harness files by section heading ("standing rules § Sandbox / Network"), never by line number. Line numbers rot on every edit; BB-Notes shipped a wrong one within weeks.
 
 ---
 
