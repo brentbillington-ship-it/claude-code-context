@@ -162,7 +162,7 @@ Two-tier PDF strategy — always follow this:
 
 ## Custom Skills
 
-Skill files live in `skills/` in this repo. Reference them at session start or copy into `.claude/skills/` in a project.
+Skills live as `skills/<name>/SKILL.md` directories in this repo (official Agent Skills format since 2026-07-02). Copy a skill DIRECTORY into a project's `.claude/skills/` or `~/.claude/skills/` to install it. Richer templates live at `playbook/templates/skills/`.
 
 ---
 
