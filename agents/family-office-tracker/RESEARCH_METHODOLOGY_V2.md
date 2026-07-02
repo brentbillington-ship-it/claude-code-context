@@ -87,7 +87,7 @@ V1 CCP forbade screenshot capture; the Aesthetics agent had no fallback and prod
 
 ### Playwright via Edge (msedge channel)
 
-Chrome is NOT installed on Brent's machine; Edge IS. **Do not run `playwright install chromium`.** Use the already-installed Edge through the msedge channel.
+Chrome is NOT installed on Brent's ThinkPad; Edge IS. On the ThinkPad, **do not run `playwright install chromium`** for this engagement. Use the already-installed Edge through the msedge channel.
 
 ```python
 # render_pattern.py — canonical pattern to copy/adapt
@@ -174,7 +174,7 @@ Per-vendor subdirectories under `aesthetics/` because each vendor has multiple p
 
 ## Hard constraints (carry these into every agent prompt)
 
-- **Playwright via Edge channel only** (`channel='msedge'`). Never `playwright install chromium`.
+- **Playwright via Edge channel** (`channel='msedge'`) on the ThinkPad. In a claude.ai/code container, use the pre-installed Chromium instead; msedge does not exist there. Scoped rule, not universal — see CCC standing rules § Browser channel.
 - `wait_until='networkidle'`, `timeout=30000`.
 - Headless by default.
 - **No login attempts.** No paywall bypass. No CAPTCHA solving.

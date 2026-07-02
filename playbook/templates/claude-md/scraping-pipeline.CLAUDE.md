@@ -4,7 +4,7 @@
 
 ```
 py -m pip install -r requirements.txt
-playwright install chromium          # never Edge
+playwright install chromium          # scraping rule for the ThinkPad; visual research may use msedge, see CCC standing rules § Browser channel
 py run_all.py --dry-run
 py run_all.py --cities all
 py run_all.py --cities austin,dallas --out output/2026-04-22.xlsx

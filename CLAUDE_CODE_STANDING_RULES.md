@@ -60,10 +60,25 @@ When compacting, always preserve:
 - Always screenshot on failure for debugging
 - Use `playwright.sync_api` (sync API)
 - Headless mode tied to GUI toggle where applicable
-- `playwright install chromium` — do not use Edge
+
+### Browser channel — depends on the environment (see § Environment Matrix)
+There is no single browser rule. Past versions of this file said both
+"install chromium, never Edge" and "msedge channel only," which are rules
+for two different machines stated as universals. The scoped truth:
+
+- **ThinkPad (local CLI):** scraping pipelines use installed Chromium
+  (`playwright install chromium`). Visual-research rendering (R1-R6, D8)
+  uses `channel="msedge"`: Edge ships with Windows, needs no download,
+  and is the channel the Gala V2 run proved out. Both are legitimate on
+  this machine; pick by task.
+- **claude.ai/code sessions (web/remote container):** use the
+  container's pre-installed Chromium. Do NOT run `playwright install`
+  (the CDN may be blocked and the download is wasted). msedge is not
+  available here. If Playwright cannot reach a target host, that is the
+  network allowlist, not the browser — see § Sandbox / Network.
 
 ### Playwright CLI vs Playwright MCP
-- Use **Playwright CLI** (`@playwright/cli`) for heavy scraping sessions — 75% fewer tokens than MCP
+- Use **Playwright CLI** (`@playwright/cli`) for heavy scraping sessions — 75% fewer tokens than MCP (note: CLI was broken on the ThinkPad Node stack as of 2026-05-10; see `playbook/agents/browser-qa.md` for the working decision tree)
 - Use **Playwright MCP** for quick browser checks and interactive debugging
 - Install CLI: `npm install -g @playwright/cli@latest`
 
@@ -154,7 +169,19 @@ Only if github-mcp-server is unavailable:
 
 ---
 
-## Sandbox / Network — github.io Block Fix
+## Sandbox / Network
+
+### Environment Matrix — know which machine you are on before claiming anything is blocked
+
+Three environments run these rules. They have different network realities and different remedies. Every "X is blocked" claim must name the environment it was observed in.
+
+| Environment | Network reality | Remedy when a host is blocked |
+|---|---|---|
+| **ThinkPad local CLI** | Sandbox allowlist from settings files; widenable | Add the domain to `.claude/settings.local.json` (below) and restart the session |
+| **claude.ai/code web/remote container** | Network policy fixed at environment creation; direct fetches to most external hosts fail (`*.github.io`, Reddit, HN, vendor sites); github.com + raw + api, npm, pypi are open | Widen via the environment's network policy or `settings.local.json` where honored, RESTART required; otherwise route the fetch through WebFetch/WebSearch or hand the render to the ThinkPad |
+| **WebFetch / WebSearch tools** | Ride Anthropic's egress, reach arbitrary domains even when curl from the same session cannot | Use them for text retrieval and cross-validation; they cannot render UI (R1 still applies) |
+
+Probed 2026-07-02 from a claude.ai/code remote container: `github.io`, `reddit.com`, `news.ycombinator.com` blocked at the network layer; `registry.npmjs.org`, `pypi.org` open; WebFetch/WebSearch reached all targets. Log new observations in `AGENTS_RESEARCH_BOOTSTRAP.md` § Sandbox reachability log.
 
 ### Symptom
 
@@ -164,7 +191,7 @@ Canvassing-Map CLAUDE.md Rule 1 documents this symptom — the settings fix belo
 
 ### Fix
 
-Create `.claude/settings.local.json` in the project root:
+Create `.claude/settings.local.json` in the project root. **A restart is required; mid-session changes do not take effect.**
 
 ```json
 {
@@ -298,8 +325,8 @@ research task that involves competitor UIs, pricing, or visual claims.
 
 If a deliverable will assert anything about a vendor's UI, dashboard
 layout, chart design, color usage, or visual pattern, the agent
-MUST render the actual page through Playwright (msedge channel —
-see Playwright section), save a screenshot locally to a
+MUST render the actual page through Playwright (browser channel per
+§ Browser channel), save a screenshot locally to a
 `screenshots/` directory, and Read the screenshot file back into
 context so the agent actually sees the rendered output. WebFetch
 returns text — it cannot see UI. On JS-heavy marketing pages it
@@ -324,7 +351,7 @@ blog. Never again.
 ### R3. Pre-flight gate research runs with a Playwright smoke test
 
 Before spawning multiple research agents, run a smoke test that
-launches Playwright (msedge), navigates to a known URL, takes a
+launches Playwright (channel per § Browser channel), navigates to a known URL, takes a
 screenshot, and reports OK. If smoke fails, halt and notify the
 user. Don't burn budget spawning agents whose tool dependency is
 broken.
@@ -428,8 +455,8 @@ generally not where the residents live.
 ### D8. Ground-truth scraping via Playwright — no paid APIs
 
 When a user wants address-to-coord ground truth and there is no paid
-geocoder key, use Playwright (msedge channel per the playwright-via-Edge
-rule above) to drive Google Maps or the DCAD property viewer. Extract
+geocoder key, use Playwright (browser channel per § Browser channel)
+to drive Google Maps or the DCAD property viewer. Extract
 the coord from the URL after the site resolves the address. This is
 the canonical pattern for the "compare stored coord vs. real location"
 loop on this account.
