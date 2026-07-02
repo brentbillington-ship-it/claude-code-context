@@ -70,7 +70,7 @@ const { chromium } = require('playwright');
 const browser = await chromium.launch({ headless: true });
 const page = await browser.newPage();
 await page.goto('https://brentbillington-ship-it.github.io/Canvassing-Map/');
-await page.fill('#pw-input', 'choochoo');
+await page.fill('#pw-input', DEV_PW); // DEV_PW from CLAUDE.local.md — never commit the literal
 await page.click('#pw-btn');
 await page.waitForTimeout(15000);
 

@@ -711,9 +711,9 @@ explain the bypass in the commit message body.
 
 | Project | Repo | Notes |
 |---------|------|-------|
-| Canvassing App | `brentbillington-ship-it/Canvassing-Map` | GitHub Pages + Google Sheets + Leaflet.js, pw: choochoo |
+| Canvassing App | `brentbillington-ship-it/Canvassing-Map` | GitHub Pages + Google Sheets + Leaflet.js, dev pw: in CLAUDE.local.md |
 | Municipal Markets | `brentbillington-ship-it/Municipal-Markets` | Halff internal only — zero Billington Works branding |
-| Signs Map | — | Apps Script, pw: choochoo |
+| Signs Map | — | Apps Script, dev pw: in CLAUDE.local.md |
 
 ---
 

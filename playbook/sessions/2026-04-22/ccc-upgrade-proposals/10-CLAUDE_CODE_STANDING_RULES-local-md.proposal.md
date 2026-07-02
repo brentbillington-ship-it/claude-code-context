@@ -46,7 +46,7 @@ Current standing rules mention `CLAUDE.local.md` in one line. Community consensu
 
 `~/.claude/CLAUDE.md` stays short and generic — things true across every project you touch.
 `<repo>/CLAUDE.md` ships with the repo; clients read it. No personal context, no branding bleed.
-`<repo>/CLAUDE.local.md` is yours, gitignored. Dev passwords (`choochoo`), sandbox URLs, test accounts.
+`<repo>/CLAUDE.local.md` is yours, gitignored. Dev passwords, sandbox URLs, test accounts.
 
 ### Content rules
 
