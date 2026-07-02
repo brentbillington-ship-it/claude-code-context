@@ -668,7 +668,7 @@ data viz, doc writing, security scan, deploy verify, etc.), search in
 this order BEFORE drafting a new agent from scratch:
 
 1. **CCC core library** — `claude-code-context/playbook/agents/<name>.md`.
-   ~12 cross-project reusable agents. Invoke as-is, OR read as a starting
+   14 cross-project reusable agents. Invoke as-is, OR read as a starting
    point and augment inline for task-specific needs (the augmentation
    does not need to be persisted unless the same augmentation recurs).
 2. **CCC engagement-specific** — `claude-code-context/agents/<name>.md`
