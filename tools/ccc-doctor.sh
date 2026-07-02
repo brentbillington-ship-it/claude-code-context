@@ -66,14 +66,14 @@ done)
 [[ $deadlinks -eq 0 ]] && say_ok "no dead relative markdown links"
 
 # --- 4. Line-number references to harness files -------------------------------
-if git grep -nIE '(standing rules|STANDING_RULES\.md)[^|]{0,40}lines? [0-9]+' -- '*.md' \
-   | grep -v 'never by line number' | grep -v 'tools/ccc-doctor' | grep -q .; then
-  git grep -nIE '(standing rules|STANDING_RULES\.md)[^|]{0,40}lines? [0-9]+' -- '*.md' \
-    | grep -v 'never by line number' | grep -v 'tools/ccc-doctor' \
-    | while read -r hit; do say_warn "line-number reference (use section headings): ${hit:0:120}"; done
-else
-  say_ok "no line-number references to harness files"
-fi
+ln_hits=0
+while IFS= read -r hit; do
+  [[ -z "$hit" ]] && continue
+  say_warn "line-number reference (use section headings): ${hit:0:120}"
+  ln_hits=1
+done < <(git grep -nIE '(standing rules|STANDING_RULES\.md)[^|]{0,40}lines? [0-9]+' -- '*.md' \
+  | grep -v 'never by line number' | grep -v 'tools/ccc-doctor' || true)
+[[ $ln_hits -eq 0 ]] && say_ok "no line-number references to harness files"
 
 # --- 5. Secret scan over the whole tree ---------------------------------------
 secret_patterns=(

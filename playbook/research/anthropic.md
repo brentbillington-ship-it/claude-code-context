@@ -1,5 +1,8 @@
 # Anthropic Scout — Report
 
+*Refreshed 2026-07-02 (CT) by the harness-review session. verify-by: 2026-10-01 — run the refresh procedure in EXPANSION_QUEUE.md if past due.*
+
+
 Researched 2026-04-22 against `code.claude.com/docs/en/*` (the new canonical home for Claude Code docs; `docs.claude.com/en/docs/claude-code/*` now 301s here), `platform.claude.com` (Agent SDK + release notes), the anthropic.com engineering blog, and the anthropics/claude-code CHANGELOG.
 
 ## Official guidance map
@@ -136,3 +139,23 @@ From `anthropics/claude-code` CHANGELOG and release-notes redirect (summarized �
 - **agentskills.io** — open-standard spec Skills conform to; useful when designing skills intended to work in both Claude Code and other hosts.
 
 Deep-dive priority if you only read one thing: `anthropics/skills` examples + the Skills doc page. They encode the Anthropic house style (tight description, progressive disclosure via supporting files, scripts over inlined code) more concretely than prose ever will.
+
+---
+
+## Delta — 2026-07-02 refresh (verified against live docs this session)
+
+The April report above remains accurate as history. What changed by July 2026, verified on code.claude.com/docs pages and the official changelog:
+
+- **Models.** Opus 4.8 (May 28, CC v2.1.154): high effort default, `/effort xhigh`, fast mode re-priced to 2x cost for 2.5x speed; `CLAUDE_CODE_OPUS_4_6_FAST_MODE_OVERRIDE` removed June 2. Fable 5 / Mythos 5 (June 9, Mythos-class tier above Opus, $10/$50, 1M native, usage-credits burn ~2x Opus). **Sonnet 5 is the Claude Code default since June 30** (v2.1.197): 1M native context, promo $2/$10 through Aug 31, and a new tokenizer that counts ~30% more tokens for the same text (https://simonwillison.net/2026/Jun/30/claude-sonnet-5/).
+- **Memory.** Path-scoped rules `.claude/rules/*.md` with `paths:` frontmatter are the sanctioned home for conditional guidance. Auto memory matured (MEMORY.md compaction reminders June 22). https://code.claude.com/docs/en/memory
+- **Subagents.** Hierarchical spawning (3 levels foreground, 5 background, June 10-17); per-agent `memory`; `background`; `isolation: "worktree"` frontmatter. Agent teams: `TeamCreate`/`TeamDelete` REMOVED June 15; implicit team + Agent-tool name param.
+- **Dynamic workflows** ("ultracode" trigger since June 2): JS orchestration over up to 1,000 subagents. The community's #1 new cost hazard. https://claude.com/blog/introducing-dynamic-workflows-in-claude-code
+- **Hooks.** Matcher semantics changed v2.1.195 (June 26): hyphenated matchers exact-match ("mcp__foo-bar" needs "mcp__foo-bar__.*"). New/expanded events since April: MessageDisplay, PostToolBatch, Setup (with --init/--maintenance), post-session for self-hosted runners; SessionStart can return reloadSkills/sessionTitle; Stop/SubagentStop can return additionalContext.
+- **Permissions.** `auto` mode (classifier) consentless since May 27, hardened June 19-23 (destructive-git/IaC blocking, denial escalation); `Tool(param:value)` syntax, e.g. `Agent(model:opus)` deny rules; `disableSideloadFlags` (v2.1.193).
+- **Sandbox.** `sandbox.credentials` setting blocks credential-file reads (June 23); per-session remembered allowed hosts (June 24); WebFetch wildcard-subdomain matching bug fixed June 10 (v2.1.172).
+- **CLI/CI.** `--safe-mode`, `/cd`, `/config key=value`, `fallbackModel` chains (3 deep), `--bare`, `--max-budget-usd`, `claude agents --json`, background agents auto-open draft PRs (July 1). `/agents` wizard removed July 1: manage `.claude/agents/` as files.
+- **Plugins.** Monitors (v2.1.105+), themes (experimental), inline hooks/MCP in plugin.json, auto-loading plugins from `.claude/skills` without a marketplace (May 29, v2.1.157), `/plugin` search (June 10), `claude plugin init` scaffolding.
+- **Output styles**: still active, NOT deprecated; legacy `/output-style` command removed v2.1.91, use `/config`.
+- **Proxy caveat.** Claude Code steganographically marks prompts routed to non-Anthropic `ANTHROPIC_BASE_URL` hosts (HN, June 30: https://news.ycombinator.com/item?id=48734373, writeup https://thereallo.dev/blog/claude-code-prompt-steganography). Remote Control disabled on non-Anthropic base URLs (v2.1.196).
+
+UNVERIFIED from this refresh: checkpointing/rewind doc page (404 at fetch time; feature works per changelog), exact auto-mode launch date.

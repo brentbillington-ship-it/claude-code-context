@@ -1,5 +1,8 @@
 # Practitioner Scout — Report
 
+*Refreshed 2026-07-02 (CT) by the harness-review session. verify-by: 2026-10-01 — run the refresh procedure in EXPANSION_QUEUE.md if past due.*
+
+
 _Wave 1, 2026-04-22. Scope: independent practitioners who actually ship with Claude Code._
 
 ## Top practitioners + their biggest CC insight
@@ -84,3 +87,12 @@ _Wave 1, 2026-04-22. Scope: independent practitioners who actually ship with Cla
 - [wshobson/agents](https://github.com/wshobson/agents) — multi-agent orchestration patterns.
 - [ThariqS](https://github.com/ThariqS) — Thariq's own GitHub; worth tracking for CC-team-adjacent experiments.
 - [kieranklaassen](https://github.com/kieranklaassen) — Every/Cora's GM; compound-engineering artifacts.
+
+---
+
+## Delta — 2026-07-02 refresh
+
+- **Simon Willison**: Code w/ Claude live blog (May 6), Opus 4.8 review (May 28, "modest but tangible"), Fable 5 first impressions (June 9, "relentlessly proactive"), Sonnet 5 tokenizer analysis (June 30, ~30% more tokens for same text). https://simonwillison.net/
+- **Boris Cherny**: Fortune interview June 8 — manages "tens of thousands of agents" on some days; no longer prompts directly, "writes loops". https://fortune.com/2026/06/08/anthropics-boris-cherny-creator-of-claude-code-says-there-are-days-he-manages-tens-of-thousands-of-ai-agents-at-once/
+- **Anthropic engineering**: "How we built Claude Code auto mode" (https://www.anthropic.com/engineering/claude-code-auto-mode), "Effective harnesses for long-running agents" (https://www.anthropic.com/engineering/effective-harnesses-for-long-running-agents), "Steering Claude Code: skills, hooks, rules, subagents" (https://claude.com/blog/steering-claude-code-skills-hooks-rules-subagents-and-more), refreshed best-practices doc (https://code.claude.com/docs/en/best-practices).
+- **Dan Shipper / Every**: conference report (https://every.to/chain-of-thought/inside-anthropic-s-2026-developer-conference); positions Fable as the heavy-jobs-only model.

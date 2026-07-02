@@ -1,5 +1,8 @@
 # Hacker News Scout — Report
 
+*Refreshed 2026-07-02 (CT) by the harness-review session. verify-by: 2026-10-01 — run the refresh procedure in EXPANSION_QUEUE.md if past due.*
+
+
 Coverage window: Oct 2025 – Apr 2026. Direct fetches of HN threads returned 403, so thread content below is reconstructed from HN's public titles, cached summaries, and secondary reporting that quotes or paraphrases the HN comments. Every claim is linked to the originating HN thread.
 
 ## High-signal threads (top 10)
@@ -63,3 +66,13 @@ Honorable mentions: **Claude Code gets native LSP support** (https://news.ycombi
 - **ComposioHQ/awesome-claude-plugins** and **quemsah/awesome-claude-plugins** — curated lists of plugins, commands, subagents, and hooks; useful for seeing what the community actually installs.
 - **czlonkowski/n8n-mcp** — n8n-as-MCP; popular in workflow automation threads.
 - **aaddrick/contrarian** — a `.claude/agents/contrarian.md` subagent pattern; small but illustrative of the "critic subagent" approach practitioners recommend over blanket subagent use.
+
+---
+
+## Delta — 2026-07-02 refresh (threads since May 2026)
+
+- **Claude Code steganographically marks requests** (June 30, ~350+ pts): https://news.ycombinator.com/item?id=48734373 — binary analysis of v2.1.196; markers injected when ANTHROPIC_BASE_URL points at non-Anthropic hosts, keyword list targets Chinese-lab endpoints. Writeup: https://thereallo.dev/blog/claude-code-prompt-steganography. Relevant to any proxy/gateway setup.
+- **Uber torches 2026 AI budget on Claude Code in four months** (May 4): https://news.ycombinator.com/item?id=47976415 — the $5-10k/month per-engineer spend debate.
+- **Claude for Small Business** (May 18): https://news.ycombinator.com/item?id=48130950 — non-engineers onboarded to Claude Code.
+- **Anthropic requires 30-day data retention for Fable and Mythos**: https://news.ycombinator.com/item?id=48464258 — the June export-control saga (Fable suspended June 12, restored ~July 1).
+- **MRI second-opinion thread** (late June): https://news.ycombinator.com/item?id=48708941.
