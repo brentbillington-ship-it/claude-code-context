@@ -1,3 +1,10 @@
+---
+name: senior-product-review
+description: Senior UIX + QA + research-gap review gate for any non-minor product change (S1 triggers - multi-surface UI change, new or modified feature, 50+ net lines, multi-file, or session deliverable) before it is declared shipped. Runs three lenses per standing rules S2 and the V1-V5 visual discipline. Dispatch as a separate agent per S3; the implementer never self-reviews. Judgment-heavy: runs on opus per the model-routing house pattern.
+tools: Read, Glob, Grep, Bash, WebFetch
+model: opus
+---
+
 # Senior Product Review Agent
 
 > **Run a senior UIX + QA + research-gap review on a non-minor product change before it is declared shipped to the user.**

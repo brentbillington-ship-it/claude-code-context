@@ -1,3 +1,10 @@
+---
+name: proposal-scope-qa
+description: Line-by-line scope traceability check of a Billington Works proposal against discovery notes and the client's written confirmation. Use when a proposal draft exists and discovery artifacts are available. Catches scope drift, invented deliverables, and missing confirmed items. Not a pricing or legal check.
+tools: Read, Glob, Grep
+model: sonnet
+---
+
 # Proposal Scope QA Agent
 
 > **Verify the proposal captures every confirmed scope item from discovery and the client's follow-up confirmation, with no drift or invented content. Source-of-truth check, line by line.**
