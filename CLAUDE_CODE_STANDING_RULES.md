@@ -15,7 +15,10 @@ Working email: bbillington@halff.com
 **Never push to GitHub, execute irreversible commands, or take any destructive action without me explicitly saying "go."**
 
 Before any work session:
-1. Use the **Superpowers Brainstorm skill** to analyze the codebase and produce a structured plan
+1. Analyze the codebase and produce a structured plan. Use the
+   **Superpowers Brainstorm skill** where installed; in environments
+   without it (claude.ai/code web sessions), native plan mode covers the
+   same intent.
 2. Present all changes as a numbered list
 3. Wait for **"go"** before writing a single line of code
 
@@ -23,12 +26,21 @@ Violations are a trust issue. When in doubt, stop and ask.
 
 ---
 
-## Context Management — Follow These Thresholds
+## Context Management
 
-- **50% context used** → run `/compact` proactively. Do not wait for auto-compact.
-- **70%** → precision drops. Flag it and ask if I want to compact or start fresh.
-- **85%** → hallucination risk increases. Stop and compact immediately.
-- **90%+** → responses go erratic. Do not proceed without compacting first.
+The old fixed thresholds ("compact at 50%") were written for a 200k
+window. Current default models carry a native 1M window; scale the
+judgement with the window instead of a fixed percentage:
+
+- Compact proactively at a natural task boundary once the session feels
+  past its midpoint, and always with a forward-looking preamble: state
+  what is being worked on next so the summary optimizes for it.
+- Prefer a fresh session over a second compaction. Two compactions deep,
+  the session is running on summaries of summaries.
+- `/rewind` can recover state from before a `/clear`; a nuked session is
+  no longer unrecoverable.
+- Long-session symptoms (instructions skipped, focus drift) are a signal
+  to compact or restart regardless of the percentage shown.
 
 When compacting, always preserve:
 - All file paths modified this session
@@ -38,10 +50,38 @@ When compacting, always preserve:
 
 ---
 
+## Model Routing
+
+House default (updated 2026-07-02, verified against live docs):
+
+- **Sonnet 5** (Claude Code default since June 2026): routine sessions and
+  ALL subagent workers. Native 1M context. Note its tokenizer counts ~30%
+  more tokens for the same text; old token-budget numbers are stale.
+- **Opus 4.8 as orchestrator**: for multi-agent sessions, run the main
+  loop on Opus and let it dispatch `model: sonnet` workers (the
+  `playbook/agents/` frontmatter already pins workers to the sonnet
+  alias). Orchestrator turns are few, worker turns are many, so the cost
+  asymmetry favors this. Opus fast mode is 2x cost for 2.5x speed, cheap
+  enough to sit in.
+- **Haiku**: mechanical extraction, single-document AI extraction.
+- **Fable 5 (Mythos tier)**: heavy jobs only, by explicit decision, never
+  as a default. It burns usage credits at roughly 2x Opus rates and
+  routinely eats 500k+ tokens per task.
+- Keep `model:` in agent frontmatter as version-agnostic aliases (sonnet,
+  opus, haiku), not pinned version IDs.
+
+**Dynamic workflows / "ultracode" budget rule:** multi-agent workflow runs
+can burn a week's quota in a day. Do not trigger one without an explicit
+decision, and set `/usage-credits` spend limits before the first run.
+Check `/usage` per-category breakdown when a session's burn looks wrong.
+
+---
+
 ## Plugins & Tools
 
 ### Superpowers (v5.0.7)
-- MUST invoke Brainstorm before touching any code — no exceptions, even for small changes
+- Where installed (ThinkPad): invoke Brainstorm before touching any code, even for small changes
+- Where not installed (web sessions): plan mode + numbered-list proposal fills the same role; do not skip the gate just because the plugin is absent
 - Use `/simplify` after completing a feature as a post-edit quality check
 
 ### Sequential Thinking MCP
@@ -137,12 +177,20 @@ For overnight runs or multi-city scraping (Municipal Markets, etc.), fork contex
 
 ## Notifications — When Complete or Blocked
 
-**Desktop (Windows PC):**
+**Preferred (mechanical):** wire the hook templates so notification is
+automatic instead of remembered:
+- `playbook/templates/hooks/desktop-notify-on-blocked.sh` on the
+  `Notification` event
+- `playbook/templates/hooks/desktop-notify-on-complete.sh` on `Stop`
+Both are cross-platform (notify-send / osascript / PowerShell) and wired
+in `playbook/templates/hooks/settings.example.json`.
+
+**Manual fallback (Windows PC, when hooks are not installed):**
 ```powershell
 powershell -Command "Add-Type -AssemblyName System.Windows.Forms; [System.Windows.Forms.MessageBox]::Show('Claude Code needs your input — check browser', 'Claude Code')"
 ```
 
-**Mobile (on phone — use this instead of PowerShell):**
+**Mobile (on phone):**
 Send a push notification through the Claude app's built-in notification system.
 
 **Always notify:**
@@ -158,12 +206,14 @@ Send a push notification through the Claude app's built-in notification system.
 Use for all repo operations: browse files, create PRs, check CI, manage issues.
 Remote endpoint: `https://api.githubcopilot.com/mcp/`
 
-### Fallback — Chrome MCP workaround
-Only if github-mcp-server is unavailable:
-- Open a `github.com` tab in Chrome
-- Use `javascript_tool` via Chrome MCP
-- `fetch()` with `Authorization: token <PAT>` header
-- GET file sha first, then PUT with base64-encoded content
+### Retired — Chrome MCP workaround
+The old fallback (PAT pasted into a Chrome tab's `javascript_tool` fetch)
+is retired as of 2026-07-02. It put a credential into browser-executed
+script and is unnecessary: the official github-mcp-server covers every
+repo operation, is built into claude.ai/code sessions, and plain
+git-over-https works in every environment probed. If github-mcp-server
+is genuinely down, use git directly; do not resurrect the PAT-in-browser
+pattern.
 
 **Never commit destructive changes** (force push, delete branch, rewrite history) without explicit approval.
 
@@ -239,20 +289,13 @@ Add `.claude/settings.local.json` to the repo's `.gitignore`. This file is machi
 | Terminal | `py` not `python` — `py -m pip` not `pip` |
 
 ### Ruff PreToolUse Hook
-Add to Claude Code settings — catches Python issues before they compound:
-```json
-{
-  "hooks": {
-    "PreToolUse": [{
-      "matcher": "Write",
-      "hooks": [{
-        "type": "command",
-        "command": "ruff check --stdin-filename \"$TOOL_INPUT_FILE\" || true"
-      }]
-    }]
-  }
-}
-```
+Catches Python issues before they compound. Use the maintained template
+at `playbook/templates/hooks/ruff-pretooluse.sh`, wired via
+`playbook/templates/hooks/settings.example.json` (matcher
+`Write|Edit|MultiEdit`). Hooks receive JSON on stdin; the template parses
+`tool_input.file_path` from it. An older inline example here used a
+`$TOOL_INPUT_FILE` env var that does not exist in the hooks API; if you
+copied it anywhere, replace it with the template.
 
 ---
 
@@ -567,8 +610,9 @@ unless the user overrides specific items.
 
 ### S6. Senior-review agent definition
 
-The senior-reviewer agent is `superpowers:senior-product-review`
-(see `agents/senior-product-review.md` for the playbook). It runs
+The senior-reviewer agent is `agents/senior-product-review.md` in CCC
+(a CCC playbook, not part of the Superpowers plugin; an older version of
+this rule misnamed it with a `superpowers:` namespace). It runs
 the three lenses above. Invoke after a non-minor change is
 implementer-complete and before the user is asked to test.
 
@@ -793,6 +837,31 @@ explain the bypass in the commit message body.
 
 ---
 
+## Platform Notes — verified 2026-07-02
+
+Features that changed how this harness should be used, verified against
+live Anthropic docs. Full detail in `playbook/research/anthropic.md`.
+
+- **Path-scoped rules:** `.claude/rules/*.md` with `paths:` frontmatter
+  load only when Claude touches matching files. The sanctioned home for
+  conditional guidance that used to bloat CLAUDE.md files.
+- **Auto memory:** Claude maintains
+  `~/.claude/projects/<project>/memory/MEMORY.md` itself (first 200
+  lines load each session). Durable project facts belong there or in
+  CLAUDE.md, not in chat history.
+- **Hook matchers:** hyphenated matchers exact-match since v2.1.195
+  (June 2026). `mcp__foo-bar` no longer substring-matches; use
+  `mcp__foo-bar__.*`.
+- **Headless/CI:** `claude -p` with `--bare` (skip all customization for
+  fast CI startup) and `--max-budget-usd` (hard cost ceiling).
+- **Plugins are the distribution unit** for skills/agents/hooks/MCP
+  bundles. CCC's raw-URL fetch ritual predates them; see the plugin
+  packaging under `plugin/` when it lands.
+- **Skills are cross-tool:** the Agent Skills standard is supported by
+  many non-Claude tools now. Write skills harness-neutral where cheap.
+
+---
+
 ## Active Projects
 
 | Project | Repo | Notes |
@@ -803,4 +872,4 @@ explain the bypass in the commit message body.
 
 ---
 
-*Last updated: April 2026*
+*Last updated: 2026-07-02 (CT) — harness review session*
