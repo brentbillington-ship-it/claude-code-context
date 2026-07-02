@@ -136,7 +136,7 @@ Step-by-step instructions CC follows. Numbered. Concrete.
 In any CC prompt, reference agents by filename:
 
 ```
-Invoke AGENTS_PLAYWRIGHT_QA.md — run full visual QA against live site.
+Invoke AGENTS_VISUAL_QA.md — run full visual QA against live site.
 ```
 
 CC reads the file, follows the playbook, reports against the success criteria.

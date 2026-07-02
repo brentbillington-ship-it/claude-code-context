@@ -65,7 +65,7 @@ For the target house, answer every cell in this table by reading the code:
 
 ### Step 5 — Validate with Playwright (if available)
 
-Use AGENTS_PLAYWRIGHT_QA.md Phase 5 approach to click the specific marker and inspect the popup state.
+Use the AGENTS_VISUAL_QA.md popup/click extension approach to click the specific marker and inspect the popup state.
 
 ---
 
@@ -89,7 +89,7 @@ Use AGENTS_PLAYWRIGHT_QA.md Phase 5 approach to click the specific marker and in
 Report as a single markdown table with the trace columns filled in, followed by:
 - **DIAGNOSIS:** One sentence root cause.
 - **FIX:** Specific line(s) and change needed.
-- **VERIFY:** Which AGENTS_PLAYWRIGHT_QA.md check confirms the fix.
+- **VERIFY:** Which AGENTS_VISUAL_QA.md check confirms the fix.
 
 ## Failure Modes & Recovery
 

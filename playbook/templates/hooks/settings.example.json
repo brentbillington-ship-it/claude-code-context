@@ -1,5 +1,5 @@
 {
-  "_comment": "Example settings.json wiring for the six hook scripts. Place at .claude/settings.json or ~/.claude/settings.json. Replace $CCC with the absolute path to your claude-code-context checkout.",
+  "_comment": "Example settings.json wiring for the seven hook scripts. Place at .claude/settings.json or ~/.claude/settings.json. Replace $CCC with the absolute path to your claude-code-context checkout.",
 
   "hooks": {
     "PreToolUse": [
