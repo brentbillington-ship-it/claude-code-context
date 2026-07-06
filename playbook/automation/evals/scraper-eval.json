@@ -1,0 +1,44 @@
+{
+  "skill": "scraper",
+  "description": "Binary eval assertions for the scraper.md skill",
+  "test_inputs": [
+    {
+      "prompt": "Scrape the city council meeting agenda from a municipal website. The URL is https://example-city.gov/agendas. Extract meeting dates, agenda item titles, and associated document links.",
+      "context": "Target city uses a standard CivicPlus CMS. Pages are server-rendered HTML with table layouts."
+    },
+    {
+      "prompt": "The scraper is returning empty results for PDF links. The page loads content dynamically via JavaScript. Diagnose and fix.",
+      "context": "Current scraper uses requests + BeautifulSoup. Target page uses AJAX to load a document table after initial page render."
+    },
+    {
+      "prompt": "Add retry logic to the scraper for handling intermittent 503 errors from the city's server. It should back off exponentially and give up after 4 attempts.",
+      "context": "Scraper currently has no retry logic and crashes on any non-200 response."
+    }
+  ],
+  "assertions": [
+    {
+      "id": "a1",
+      "question": "Does the output include concrete Python code (not just pseudocode or descriptions)?"
+    },
+    {
+      "id": "a2",
+      "question": "Does the code use appropriate libraries for the task (e.g., requests, BeautifulSoup, Selenium/Playwright for JS-rendered pages)?"
+    },
+    {
+      "id": "a3",
+      "question": "Does the output include error handling (try/except blocks or equivalent) for network failures?"
+    },
+    {
+      "id": "a4",
+      "question": "Does the output avoid hardcoded sleep times without explaining why they are necessary?"
+    },
+    {
+      "id": "a5",
+      "question": "Is the code modular — using functions rather than one monolithic script?"
+    },
+    {
+      "id": "a6",
+      "question": "Does the output mention or handle the specific technical challenge described in the test input (e.g., JS rendering, retry logic, PDF extraction)?"
+    }
+  ]
+}

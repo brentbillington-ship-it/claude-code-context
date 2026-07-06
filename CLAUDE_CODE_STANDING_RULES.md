@@ -31,7 +31,8 @@ block, these are the rules that prevent the known failure modes:
    explicit decision. § Model Routing, including the ultracode budget rule.
 10. **Reference harness files by section heading, never by line number.**
 
-Section index: Who I Am · Prime Directive · Context Management · Model
+Section index: Who I Am · Prime Directive · Working Discipline · Context
+Management · Model
 Routing · Plugins & Tools (incl. Browser channel) · MCP Servers · Custom
 Skills · Subagent Pattern · Notifications · GitHub · Sandbox / Network
 (Environment Matrix) · Python Stack · VS Code Extensions · Code Delivery
@@ -63,6 +64,54 @@ Before any work session:
 3. Wait for **"go"** before writing a single line of code
 
 Violations are a trust issue. When in doubt, stop and ask.
+
+---
+
+## Working Discipline — Verify, Sample, Checkpoint
+
+Hard-won habits, promoted from CC-Content 2026-07-06. Brent has had to
+repeat these; treat them as non-negotiable.
+
+- **Debug on a SAMPLE, not the full batch.** Before any long/expensive run
+  (OCR, scrape, batch extraction), locate the change in the pipeline. If the
+  changed logic is DOWNSTREAM of the expensive step, test it on a **cached
+  intermediate** or a **small live sample** — a long batch is not a debugger.
+  **Cache expensive intermediates** so downstream tuning never re-runs the
+  costly step. sample → review → scale; run the full batch ONCE, only after
+  the sample passes. (Burned ~4 full 35-min OCR runs finding bugs that were
+  15 lines of post-step arithmetic.)
+- **Find the source of truth before sweeping.** A summary / index / manifest
+  usually answers "what changed" in one read — check it FIRST before scraping
+  every item. Size any sweep before launching it; benchmark on a slice and
+  pick the right tool before turning it loose on the whole set. (Plan-set
+  compare: the full answer was on page 1's sheet index; instead scraped 600+
+  CAD title blocks and hung ~an hour on the wrong library.)
+- **Answer the question asked; stop when redirected.** Don't chase precision
+  or completeness Brent didn't request. When he points at a simpler path or
+  says "just X," switch immediately — repeating the heavy approach after he
+  redirects is the real failure. Deliver the cheap answer, then offer to go
+  deeper.
+- **Evidence before claims — verify before asserting.** Exit code 0, a
+  printed total, or a "COMPLETE" banner is NOT proof it worked — *especially
+  after an interrupt/cancel*. Check error counts, completeness vs expected,
+  and that the success path actually ran, before reporting anything as done.
+  Treat any artifact from an interrupted run as suspect until re-verified.
+- **Verify CONTENT, not counts.** "It produced output" / "found > 0" ≠
+  correct. Open a sample: right entities, sane totals, complete coverage, no
+  junk — before promoting or claiming done.
+- **Fixes are invariants, not point-patches.** Route the fix through the
+  canonical path + add a regression guard so it can't silently regress on the
+  next case. Audit any persisted state the bug may have written.
+- **Don't trust an unstable identifier as a cache/dedup key.** Verify an ID
+  is stable across calls first — ephemeral/session tokens silently break
+  caches (a doc-ID-keyed cache that never converged → re-ran the same work
+  indefinitely).
+- **Give context BEFORE a costly ask.** Root cause → impact → cost →
+  recommendation, then the question. Never lead with "approve this."
+- **Checkpoint to git regularly.** Commit logical units as they pass
+  verification — don't let work pile up uncommitted (lost track once for
+  9 days / 141 files). Pushing still follows the Prime Directive ("go"),
+  unless a project grants standing push permission.
 
 ---
 
@@ -103,7 +152,9 @@ House default (updated 2026-07-02, verified against live docs):
   alias). Orchestrator turns are few, worker turns are many, so the cost
   asymmetry favors this. Opus fast mode is 2x cost for 2.5x speed, cheap
   enough to sit in.
-- **Haiku**: mechanical extraction, single-document AI extraction.
+- **Haiku**: mechanical extraction, single-document AI extraction. Rule of
+  thumb: describable in <50 words with a deterministic answer → haiku;
+  multi-step reasoning → sonnet; design decisions → opus.
 - **Fable 5 (Mythos tier)**: heavy jobs only, by explicit decision, never
   as a default. It burns usage credits at roughly 2x Opus rates and
   routinely eats 500k+ tokens per task.
@@ -351,6 +402,7 @@ Add `.claude/settings.local.json` to the repo's `.gitignore`. This file is machi
 |------|------|
 | Browser automation | MUST use Playwright — Selenium is banned |
 | PDF tables | MUST use pdfplumber — never tabula |
+| PDF text (large CAD/vector sets) | MUST use pymupdf (`fitz`) — pdfplumber's layout engine hangs/OOMs on heavy vector plan sheets (~8s/50pp with fitz vs an hour hung). Wrap per-page reads in try/except; clip to the title-block corner instead of full-page text |
 | PDF OCR fallback | pytesseract only when no text layer exists |
 | PDF scanned pages | Convert to image, use Claude vision via Read tool |
 | AI extraction (single) | Claude Haiku |
@@ -992,6 +1044,9 @@ live Anthropic docs. Full detail in `playbook/research/anthropic.md`.
 ---
 
 ## Active Projects
+
+Keep credentials out of this table — dev passwords and test creds live in
+`CLAUDE.local.md` (git-ignored) per § CLAUDE.md Rules.
 
 | Project | Repo | Notes |
 |---------|------|-------|
