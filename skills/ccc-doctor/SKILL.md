@@ -1,6 +1,6 @@
 ---
 name: ccc-doctor
-description: Mechanical health check for the CCC harness repo. Use at the start of any session that will edit CCC, after any batch of harness edits, and whenever registry drift, dead links, or stale research are suspected. Runs tools/ccc-doctor.sh and interprets the findings. Not for checking project repos other than claude-code-context.
+description: Mechanical health check for the CCC harness repo. Use at the start of any session that will edit CCC, after any batch of harness edits, and whenever registry drift, dead links, or stale research are suspected. Runs tools/ccc-doctor.sh and interprets the findings. Not for checking project repos other than BB-Harness.
 allowed-tools: Bash, Read, Grep
 ---
 

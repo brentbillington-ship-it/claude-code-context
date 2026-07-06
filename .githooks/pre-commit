@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# claude-code-context/.githooks/pre-commit
+# BB-Harness/.githooks/pre-commit
 #
 # Three guards, in order:
 #   1. AGENT_MANAGER drift guard — any commit touching an agent playbook file

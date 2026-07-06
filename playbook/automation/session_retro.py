@@ -11,7 +11,7 @@ repeated corrections, and wrong-path redirections, then:
 Config
 ------
 Set RETRO_PROJECT_ROOT env var or it defaults to the script's own
-directory (playbook/automation/ in claude-code-context).
+directory (playbook/automation/ in BB-Harness).
 """
 
 import json

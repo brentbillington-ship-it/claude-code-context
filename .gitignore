@@ -1,4 +1,4 @@
-# claude-code-context/.gitignore
+# BB-Harness/.gitignore
 # Personal/local overrides
 .claude/settings.local.json
 

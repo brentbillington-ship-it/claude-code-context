@@ -1,5 +1,5 @@
 {
-  "_comment": "Example settings.json wiring for the eleven hook scripts (7 original + 4 added 2026-07-02). Place at .claude/settings.json or ~/.claude/settings.json. Replace $CCC with the absolute path to your claude-code-context checkout. git-prepare-commit-msg.sh is a git hook, not a Claude hook — install it separately per its header.",
+  "_comment": "Example settings.json wiring for the eleven hook scripts (7 original + 4 added 2026-07-02). Place at .claude/settings.json or ~/.claude/settings.json. Replace $CCC with the absolute path to your BB-Harness checkout. git-prepare-commit-msg.sh is a git hook, not a Claude hook — install it separately per its header.",
 
   "_matcher_note": "Since v2.1.195 (June 2026) hyphenated matchers exact-match instead of substring-matching: 'mcp__foo-bar' must be written 'mcp__foo-bar__.*'. The plain tool-name matchers below are unaffected.",
 

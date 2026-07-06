@@ -1,4 +1,4 @@
-# claude-code-context
+# BB-Harness
 
 Global Claude Code standing rules, agents, skills, hooks, and research — Brent's operating system for every Claude Code session across every project.
 
@@ -37,7 +37,7 @@ Fetch the standing rules:
 
 ```
 Fetch and apply my standing rules from:
-https://raw.githubusercontent.com/brentbillington-ship-it/claude-code-context/main/CLAUDE_CODE_STANDING_RULES.md
+https://raw.githubusercontent.com/brentbillington-ship-it/BB-Harness/main/CLAUDE_CODE_STANDING_RULES.md
 ```
 
 Or, preferred where a local checkout exists: install the plugin (`bash tools/build-plugin.sh && claude --plugin-dir ./plugin`) and wire `playbook/templates/hooks/settings.example.json`, which injects the rules pointer automatically via the SessionStart hook.
