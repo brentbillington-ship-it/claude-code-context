@@ -1,13 +1,13 @@
 ---
 name: web-scraper
-description: Build a multi-target web scraper with robots.txt respect, retry/backoff, schema-validated output, and rate limiting. Use for the Halff Municipal-Markets multi-city pipeline, candidate filing reports, county property records, or any "pull these N URLs into a structured table" job. Wraps the `scraping-pipeline-boilerplate` skill at `playbook/templates/skills/scraping-pipeline-boilerplate/SKILL.md`. Pairs with `data-extractor` for the HTML→rows step.
+description: Build a multi-target web scraper with robots.txt respect, retry/backoff, schema-validated output, and rate limiting. Use for the Halff multi-city municipal multi-city pipeline, candidate filing reports, county property records, or any "pull these N URLs into a structured table" job. Wraps the `scraping-pipeline-boilerplate` skill at `playbook/templates/skills/scraping-pipeline-boilerplate/SKILL.md`. Pairs with `data-extractor` for the HTML→rows step.
 tools: Read, Glob, Grep, Bash, Write, WebFetch
 model: sonnet
 ---
 
 # web-scraper
 
-> **Purpose:** Build a scraper for multi-source data collection (Municipal-Markets style). Respects robots.txt and rate limits; produces schema-validated CSV/Excel/Sheet output; resumes from partial runs; logs every fetch.
+> **Purpose:** Build a scraper for multi-source data collection (multi-city municipal style). Respects robots.txt and rate limits; produces schema-validated CSV/Excel/Sheet output; resumes from partial runs; logs every fetch.
 
 ## When to Invoke
 - Multi-city scraping pipeline (Municipal Markets quarterly refresh)

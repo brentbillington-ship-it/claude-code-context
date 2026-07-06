@@ -6,9 +6,9 @@ allowed-tools: Read, Grep, Glob, Bash
 
 # Civil Document Review
 
-Created 2026-07-06 from Celina downtown-streets sessions (AVO 65429
-coordination + plan-set comparison lessons). v1 scope is what those
-sessions proved out; extend as new review types recur.
+Created 2026-07-06 from multi-consultant corridor-coordination and
+plan-set comparison work. v1 scope is what those sessions proved out;
+extend as new review types recur.
 
 ## Steps
 
@@ -24,9 +24,9 @@ sessions proved out; extend as new review types recur.
    scope in the same corridor, build a matrix: consultant × street/asset
    × discipline (paving, drainage, water, sewer, franchise). Flag every
    cell where two firms touch the same asset, and every asset no firm
-   owns. Name the open coordination questions explicitly (Celina: K-H /
-   Carollo water-sewer split on Task 400; TRC plan overlap on
-   Oak/Louisiana/Ohio).
+   owns. Name the open coordination questions explicitly (e.g. which
+   firm owns the water-sewer split on a shared task; where two firms'
+   plans overlap on the same streets).
 4. **Spec/product compatibility check.** For any named product, verify
    it against the governing spec section and the manufacturer's data
    sheet — application (vertical/overhead vs horizontal), substrate prep

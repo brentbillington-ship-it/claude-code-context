@@ -22,7 +22,6 @@ playbook/automation/retro_log.md
 playbook/automation/tune_log.md
 playbook/automation/_tuner_backup/
 
-# Assembled Halff export — built by tools/build-halff-export.sh
 halff-export/
 
 # Python bytecode

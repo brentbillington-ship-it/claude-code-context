@@ -186,7 +186,7 @@ Check `/usage` per-category breakdown when a session's burn looks wrong.
 
 ### Playwright
 - MUST use Playwright for all browser automation — Selenium is fully banned
-- Default `wait_until="networkidle"` for `page.goto()` — never "load". EXCEPTION: legacy ASP.NET/Telerik portals (NovusAgenda, Legistar grids) keep sockets chattering and never go network-quiet — use `domcontentloaded` + an explicit element wait there. (MMR 2026-06: this single change cut a Houston backfill from ~80h to ~45min.)
+- Default `wait_until="networkidle"` for `page.goto()` — never "load". EXCEPTION: legacy ASP.NET/Telerik portals keep sockets chattering and never go network-quiet — use `domcontentloaded` + an explicit element wait there. (One backfill dropped from ~80h to ~45min on this single change.)
 - MUST set timeouts explicitly (30s default)
 - Always screenshot on failure for debugging
 - Use `playwright.sync_api` (sync API)
@@ -306,38 +306,24 @@ git-over-https works in every environment probed. If github-mcp-server
 is genuinely down, use git directly; do not resurrect the PAT-in-browser
 pattern.
 
-### Accounts — two identities, know which repo wants which
+### Multiple GitHub identities on one machine
 
-- **`bbillington`** (Halff): the active `gh` keyring account. All
-  `Halff-Citizen-Devs` org repos (Municipal Market pipeline + dashboard)
-  authenticate through it and sit behind Halff SAML SSO.
-- **`brentbillington-ship-it`** (personal): Canvassing-Map, Signs Map,
-  this repo (claude-code-context), BB-Notes.
-- A second standing-rules repo exists on the Halff side
-  (`bbillington/CC-Content`, diverged since 2026-06-12, plus a scrubbed
-  `halff-ccc` export). **This repo is canonical for personal work**;
-  the Halff-side merge/retire decision is tracked in the 2026-07-06
-  harness review synthesis — do not edit rules in two places meanwhile.
+When two GitHub accounts live on one machine (e.g. a personal login and a
+work/org login), a push can silently authenticate with the wrong token
+and land in the wrong repo. Guardrails:
 
-### Halff SAML SSO credential lapses — known failure class, not an outage
+- Verify `git remote -v` and the active `gh` account BEFORE any push.
+- A 403 on push means you are aiming at a repo this identity shouldn't
+  write to — STOP and check the target; do not fall back to another
+  token to force it through.
+- Keep each clone pinned to the right remote; never let a fallback
+  credential decide which repo receives a commit.
+- A 401/404 can also be a WRONG SLUG — verify the repo name before
+  diagnosing credentials.
 
-PATs and MCP tokens against `Halff-Citizen-Devs` repos lapse repeatedly
-(three dated recurrences June 2026; a claude.ai session 401'd on
-2026-07-06). Runbook, in order:
-
-1. Re-authorize at `github.com/settings/tokens` → Configure SSO. Both
-   the MMR PAT and the MCP token are known to lapse together.
-2. If `git push` still fails while `gh` CLI works, the git credential
-   helper is broken (stale `gh.exe` temp path) — push with
-   `https://x-access-token:$(gh auth token)@github.com/<org>/<repo>.git`.
-3. A 401/404 can also be a WRONG SLUG: verify the repo name before
-   diagnosing credentials (the pre-2026-06 `Municipal-Markets` slug no
-   longer exists; see § Active Projects).
-
-For any *automation* credential (scheduled agents, bridges): fine-grained
-PAT scoped to one repo and one permission, service account where
-possible, stored in Key Vault or the platform's secret store — never a
-broad personal PAT (MMR bug-bridge spec, RISK-002).
+For any *automation* credential (scheduled agents, bridges): use a
+fine-grained PAT scoped to one repo and one permission, a service account
+where possible, stored in a secret store — never a broad personal PAT.
 
 **Never commit destructive changes** (force push, delete branch, rewrite history) without explicit approval.
 
@@ -481,8 +467,7 @@ Every bump — letter, decimal, or whole — requires updating **all** `?v=` cac
 ### Outbound writing — drafts Brent will paste into Outlook/Word
 
 Applies to emails, memos, review comments, and any prose leaving the
-session as Brent's own words (source: feedback_writing_style, Celina
-scope-doc sessions 2026-06):
+session as Brent's own words:
 
 - No em dashes or en dashes. Restructure the sentence or use a comma.
 - Double space after every period.
@@ -934,33 +919,36 @@ A grouping or count can encode an extraction error; conclusions built on
 it compound the error. A single high dollar figure shared across many
 firms is a red flag for a mis-attributed reference doc (bond ordinance,
 master PSA, score sheet), not evidence of a shared pool. Every premature
-"it's exhausted / not available" costs a full user round-trip. (MMR
-2026-07-01: San Antonio declared "94% unrecoverable" twice from a
-grouped view; the $86M was one mis-attributed 2022 bond ordinance.)
+"it's exhausted / not available" costs a full user round-trip. (A grouped
+view once read "94% unrecoverable" twice; the outlier figure was a single
+mis-attributed reference doc, not a real shared pool.)
 
 ### L8. A data-source gap is not a market conclusion
 
 Before asserting "no market" or pulling a client from a deliverable,
 verify whether the gap is structural (the data is genuinely never
 public) or an extraction failure. When pulling, retain the data and park
-a review branch — never delete. (MMR 2026-07-01: San Antonio agendas
-captured under half its real A&E work because fees are rarely public.)
+a review branch — never delete. (A source once captured under half the
+real activity because the underlying figures are rarely published — a
+data gap, not an absent market.)
 
 ### L9. Cross-document reconciliation belongs in the dedup path, not the extractor
 
 The extractor only ever sees one document; the same award appearing in a
 memo and a contract PDF with different amounts (base vs +contingency)
 can only be reconciled downstream. Any similarity-collapse needs a
-discriminator guard so "Phase 1" vs "Phase 2" never merge. (MMR
-2026-06-29: Austin/Lewisville same-meeting duplicate rows.)
+discriminator guard so "Phase 1" vs "Phase 2" never merge. (The same
+award once appeared as duplicate rows until reconciliation moved
+downstream of the extractor.)
 
 ### L10. Model divergence is a documented, single-client exception
 
 When one data source forces a different modeling basis than the rest of
 the fleet, write the divergence down where the next session will read it,
 and never retroactively "granularize" clients whose data can't support
-it. (MMR 2026-06-30: Austin on task-order spend basis vs fleet
-award-basis; FL explicitly excluded.)
+it. (One source once required a spend-basis model while the rest used
+award-basis; the exception was written down and the others were never
+retro-granularized.)
 
 ### L11. Autonomous data-writing agents are propose-only and refuse ambiguity
 
@@ -968,7 +956,7 @@ A scheduled or self-healing agent that writes to a data store: opens a
 PR, never self-merges; backs up before writing; and refuses to act on 0
 or >1 matches — an ambiguous delete is a human's call. Fix the source of
 record and rebuild derived artifacts; never hand-patch the derived file.
-(MMR 2026-07-02: self-heal triage, issue #8 invariants.)
+(Promoted from a self-healing data agent's invariants.)
 
 ---
 
@@ -1051,10 +1039,8 @@ Keep credentials out of this table — dev passwords and test creds live in
 | Project | Repo | Notes |
 |---------|------|-------|
 | Canvassing App | `brentbillington-ship-it/Canvassing-Map` | GitHub Pages + Google Sheets + Leaflet.js, dev pw: in CLAUDE.local.md |
-| Municipal Markets — pipeline | `Halff-Citizen-Devs/Municipal-Market-Research-Pipeline` | Moved to the governed Halff org June 2026 (old `Municipal-Markets` slug is dead). Halff internal only — zero Billington Works branding |
-| Municipal Markets — dashboard | `Halff-Citizen-Devs/Municipal-Market-Dashboard` | Azure SWA + Entra; strict GitFlow branch→PR→`develop`→PR→`main`; change control NC1016.153; never bulk-overwrite the org repo's governed files from `docs/` |
 | Signs Map | — | Apps Script, dev pw: in CLAUDE.local.md |
 
 ---
 
-*Last updated: 2026-07-06 (CT) — MMR-focused harness review session*
+*Last updated: 2026-07-06 (CT).*

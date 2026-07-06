@@ -1,7 +1,7 @@
 ---
 name: scraping-pipeline-boilerplate
-description: Use when setting up a new scraping pipeline (multi-city Municipal Markets style, or one-off research scrape). Wires Playwright CLI + Claude Haiku extraction + openpyxl Excel output + subagent-per-city pattern. Do not use for simple single-URL fetches — just use WebFetch for those.
-when_to_use: The user mentions scraper, scraping pipeline, Municipal Markets, multi-city scrape, Playwright job, or wants a new data-extraction script scaffolded.
+description: Use when setting up a new scraping pipeline (multi-city municipal style, or one-off research scrape). Wires Playwright CLI + Claude Haiku extraction + openpyxl Excel output + subagent-per-city pattern. Do not use for simple single-URL fetches — just use WebFetch for those.
+when_to_use: The user mentions scraper, scraping pipeline, multi-city scrape, Playwright job, or wants a new data-extraction script scaffolded.
 allowed-tools: Read, Write, Edit, Bash, Glob
 ---
 
@@ -43,17 +43,17 @@ Scaffolds a new Python scraping project aligned with CCC standing rules. Follow 
 
 ## Non-negotiables
 
-- `page.goto(url, wait_until="networkidle")` — never `"load"`. Exception: legacy ASP.NET/Telerik portals never go network-quiet — use `domcontentloaded` + an explicit element wait (see `skills/scraper/SKILL.md` § Municipal agenda platforms).
+- `page.goto(url, wait_until="networkidle")` — never `"load"`. Exception: legacy ASP.NET/Telerik portals never go network-quiet — use `domcontentloaded` + an explicit element wait (see `skills/scraper/SKILL.md` § Public agenda/records platforms).
 - Timeouts explicit, default 30s. Screenshot on failure.
 - Selenium is banned.
 - Raw HTML and API responses NEVER committed — they go to `output/` which is gitignored.
 - Credentials always via env vars, never hardcoded.
-- Every tabular/direct importer carries its own poison guard (spend-cap/refusal detection) — orchestrator-level limit detection does not protect importers that bypass it (MMR: a silent refusal dropped two counties' years of data).
-- Checkbook/structured-payments importers run the big-city QA red flags before promote: one category > ~35% of rows, window-start year far above the rest, duplicate transaction/DO ids > 0, non-A&E leakage, un-canonicalized consultant names (see MMR LESSONS_LEARNED § BIG MSA-HEAVY CITIES).
+- Every tabular/direct importer carries its own poison guard (spend-cap/refusal detection) — orchestrator-level limit detection does not protect importers that bypass it (a silent refusal once dropped years of data for two segments).
+- Structured-payment / tabular importers run the QA red flags before promote: one category > ~35% of rows, a window-start year far above the rest, duplicate transaction/record ids > 0, category leakage, un-canonicalized entity names.
 
 ## Pairs with
 
 - Playwright CLI (heavy sessions) / Playwright MCP (quick checks)
 - `campaign-data-processor` if output feeds Canvassing-Map
-- `halff-brand-compliance` if output feeds Municipal Markets
+- a brand-compliance pass if output feeds a firm-branded deliverable
 - `bw-client-deliverable` if scraping is a Billington Works deliverable
