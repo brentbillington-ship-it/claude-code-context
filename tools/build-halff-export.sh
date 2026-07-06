@@ -43,6 +43,10 @@ drop=(
   "playbook/templates/claude-md/client-deliverable.CLAUDE.md"
   "playbook/templates/skills/bw-client-deliverable"
   "playbook/templates/skills/campaign-data-processor"
+  # The generator itself: it contains the scrub map + denylist verbatim, so
+  # the name-map would rewrite it and silently defang the verify step. The
+  # export is a build artifact; the generator lives only in canonical.
+  "tools/build-halff-export.sh"
 )
 for p in "${drop[@]}"; do rm -rf "$out/$p"; done
 
