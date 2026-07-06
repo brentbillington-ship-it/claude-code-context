@@ -37,7 +37,7 @@ Skills · Subagent Pattern · Notifications · GitHub · Sandbox / Network
 (Environment Matrix) · Python Stack · VS Code Extensions · Code Delivery
 Rules · CLAUDE.md Rules · Communication Style · Research Methodology
 (R1-R6) · Debugging Discipline (D1-D8) · Senior Review Discipline (S1-S6)
-· Visual Review Discipline (V1-V5) · Shipping Lessons (L1-L6) · Agent
+· Visual Review Discipline (V1-V5) · Shipping Lessons (L1-L11) · Agent
 Library Lookup Order · Agent Files Governance · Platform Notes · Active
 Projects
 
@@ -135,7 +135,7 @@ Check `/usage` per-category breakdown when a session's burn looks wrong.
 
 ### Playwright
 - MUST use Playwright for all browser automation — Selenium is fully banned
-- MUST use `wait_until="networkidle"` for `page.goto()` — never "load"
+- Default `wait_until="networkidle"` for `page.goto()` — never "load". EXCEPTION: legacy ASP.NET/Telerik portals (NovusAgenda, Legistar grids) keep sockets chattering and never go network-quiet — use `domcontentloaded` + an explicit element wait there. (MMR 2026-06: this single change cut a Houston backfill from ~80h to ~45min.)
 - MUST set timeouts explicitly (30s default)
 - Always screenshot on failure for debugging
 - Use `playwright.sync_api` (sync API)
@@ -254,6 +254,39 @@ repo operation, is built into claude.ai/code sessions, and plain
 git-over-https works in every environment probed. If github-mcp-server
 is genuinely down, use git directly; do not resurrect the PAT-in-browser
 pattern.
+
+### Accounts — two identities, know which repo wants which
+
+- **`bbillington`** (Halff): the active `gh` keyring account. All
+  `Halff-Citizen-Devs` org repos (Municipal Market pipeline + dashboard)
+  authenticate through it and sit behind Halff SAML SSO.
+- **`brentbillington-ship-it`** (personal): Canvassing-Map, Signs Map,
+  this repo (claude-code-context), BB-Notes.
+- A second standing-rules repo exists on the Halff side
+  (`bbillington/CC-Content`, diverged since 2026-06-12, plus a scrubbed
+  `halff-ccc` export). **This repo is canonical for personal work**;
+  the Halff-side merge/retire decision is tracked in the 2026-07-06
+  harness review synthesis — do not edit rules in two places meanwhile.
+
+### Halff SAML SSO credential lapses — known failure class, not an outage
+
+PATs and MCP tokens against `Halff-Citizen-Devs` repos lapse repeatedly
+(three dated recurrences June 2026; a claude.ai session 401'd on
+2026-07-06). Runbook, in order:
+
+1. Re-authorize at `github.com/settings/tokens` → Configure SSO. Both
+   the MMR PAT and the MCP token are known to lapse together.
+2. If `git push` still fails while `gh` CLI works, the git credential
+   helper is broken (stale `gh.exe` temp path) — push with
+   `https://x-access-token:$(gh auth token)@github.com/<org>/<repo>.git`.
+3. A 401/404 can also be a WRONG SLUG: verify the repo name before
+   diagnosing credentials (the pre-2026-06 `Municipal-Markets` slug no
+   longer exists; see § Active Projects).
+
+For any *automation* credential (scheduled agents, bridges): fine-grained
+PAT scoped to one repo and one permission, service account where
+possible, stored in Key Vault or the platform's secret store — never a
+broad personal PAT (MMR bug-bridge spec, RISK-002).
 
 **Never commit destructive changes** (force push, delete branch, rewrite history) without explicit approval.
 
@@ -392,6 +425,20 @@ Every bump — letter, decimal, or whole — requires updating **all** `?v=` cac
 - Flag problems before they happen
 - Never theorize when you can read the actual file
 - If something seems wrong or risky, say so before proceeding
+
+### Outbound writing — drafts Brent will paste into Outlook/Word
+
+Applies to emails, memos, review comments, and any prose leaving the
+session as Brent's own words (source: feedback_writing_style, Celina
+scope-doc sessions 2026-06):
+
+- No em dashes or en dashes. Restructure the sentence or use a comma.
+- Double space after every period.
+- Deliver the draft inside a fenced code block — markdown rendering
+  collapses double spaces, so a normally-rendered draft loses the
+  spacing on copy-paste.
+- Match the audience register; no filler openers ("I hope this finds
+  you well") and no AI-flavored hedging.
 
 ---
 
@@ -829,6 +876,48 @@ paid for full-text search and backlinks; retain the text instead of
 re-fetching. No index library needed under ~1MB corpus. (BB-Notes
 2026-07-01. Generalizes to any GitHub-backed dashboard.)
 
+### L7. Never conclude from aggregated or grouped data — open the source document
+
+A grouping or count can encode an extraction error; conclusions built on
+it compound the error. A single high dollar figure shared across many
+firms is a red flag for a mis-attributed reference doc (bond ordinance,
+master PSA, score sheet), not evidence of a shared pool. Every premature
+"it's exhausted / not available" costs a full user round-trip. (MMR
+2026-07-01: San Antonio declared "94% unrecoverable" twice from a
+grouped view; the $86M was one mis-attributed 2022 bond ordinance.)
+
+### L8. A data-source gap is not a market conclusion
+
+Before asserting "no market" or pulling a client from a deliverable,
+verify whether the gap is structural (the data is genuinely never
+public) or an extraction failure. When pulling, retain the data and park
+a review branch — never delete. (MMR 2026-07-01: San Antonio agendas
+captured under half its real A&E work because fees are rarely public.)
+
+### L9. Cross-document reconciliation belongs in the dedup path, not the extractor
+
+The extractor only ever sees one document; the same award appearing in a
+memo and a contract PDF with different amounts (base vs +contingency)
+can only be reconciled downstream. Any similarity-collapse needs a
+discriminator guard so "Phase 1" vs "Phase 2" never merge. (MMR
+2026-06-29: Austin/Lewisville same-meeting duplicate rows.)
+
+### L10. Model divergence is a documented, single-client exception
+
+When one data source forces a different modeling basis than the rest of
+the fleet, write the divergence down where the next session will read it,
+and never retroactively "granularize" clients whose data can't support
+it. (MMR 2026-06-30: Austin on task-order spend basis vs fleet
+award-basis; FL explicitly excluded.)
+
+### L11. Autonomous data-writing agents are propose-only and refuse ambiguity
+
+A scheduled or self-healing agent that writes to a data store: opens a
+PR, never self-merges; backs up before writing; and refuses to act on 0
+or >1 matches — an ambiguous delete is a human's call. Fix the source of
+record and rebuild derived artifacts; never hand-patch the derived file.
+(MMR 2026-07-02: self-heal triage, issue #8 invariants.)
+
 ---
 
 ## Agent Library Lookup Order — Non-Negotiable
@@ -907,9 +996,10 @@ live Anthropic docs. Full detail in `playbook/research/anthropic.md`.
 | Project | Repo | Notes |
 |---------|------|-------|
 | Canvassing App | `brentbillington-ship-it/Canvassing-Map` | GitHub Pages + Google Sheets + Leaflet.js, dev pw: in CLAUDE.local.md |
-| Municipal Markets | `brentbillington-ship-it/Municipal-Markets` | Halff internal only — zero Billington Works branding |
+| Municipal Markets — pipeline | `Halff-Citizen-Devs/Municipal-Market-Research-Pipeline` | Moved to the governed Halff org June 2026 (old `Municipal-Markets` slug is dead). Halff internal only — zero Billington Works branding |
+| Municipal Markets — dashboard | `Halff-Citizen-Devs/Municipal-Market-Dashboard` | Azure SWA + Entra; strict GitFlow branch→PR→`develop`→PR→`main`; change control NC1016.153; never bulk-overwrite the org repo's governed files from `docs/` |
 | Signs Map | — | Apps Script, dev pw: in CLAUDE.local.md |
 
 ---
 
-*Last updated: 2026-07-02 (CT) — harness review session*
+*Last updated: 2026-07-06 (CT) — MMR-focused harness review session*

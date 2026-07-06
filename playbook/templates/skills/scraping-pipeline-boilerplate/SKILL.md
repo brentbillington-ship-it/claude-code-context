@@ -43,11 +43,13 @@ Scaffolds a new Python scraping project aligned with CCC standing rules. Follow 
 
 ## Non-negotiables
 
-- `page.goto(url, wait_until="networkidle")` — never `"load"`.
+- `page.goto(url, wait_until="networkidle")` — never `"load"`. Exception: legacy ASP.NET/Telerik portals never go network-quiet — use `domcontentloaded` + an explicit element wait (see `skills/scraper/SKILL.md` § Municipal agenda platforms).
 - Timeouts explicit, default 30s. Screenshot on failure.
 - Selenium is banned.
 - Raw HTML and API responses NEVER committed — they go to `output/` which is gitignored.
 - Credentials always via env vars, never hardcoded.
+- Every tabular/direct importer carries its own poison guard (spend-cap/refusal detection) — orchestrator-level limit detection does not protect importers that bypass it (MMR: a silent refusal dropped two counties' years of data).
+- Checkbook/structured-payments importers run the big-city QA red flags before promote: one category > ~35% of rows, window-start year far above the rest, duplicate transaction/DO ids > 0, non-A&E leakage, un-canonicalized consultant names (see MMR LESSONS_LEARNED § BIG MSA-HEAVY CITIES).
 
 ## Pairs with
 

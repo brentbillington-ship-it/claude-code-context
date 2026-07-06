@@ -1,0 +1,47 @@
+{
+  "_comment": "Rules for skill-router-userpromptsubmit.sh. patterns/skip are case-insensitive regexes tested against the raw user prompt. type=guardrail injects a MUST reminder; type=skill points the session at a CCC skill. Keep messages to one or two lines — they land in context on every match.",
+  "rules": [
+    {
+      "name": "action-gate",
+      "type": "guardrail",
+      "patterns": ["\\b(implement|refactor|rewrite|ship|deploy|push|commit|fix (the|this)|build (the|a|out))\\b"],
+      "skip": ["\\bgo\\b", "\\bplan only\\b", "\\bdon.?t (code|write|touch)\\b"],
+      "message": "Action gate: numbered plan first, stop, wait for explicit \"go\" before any edit, commit, or push (standing rules § Prime Directive)."
+    },
+    {
+      "name": "py-not-python",
+      "type": "guardrail",
+      "patterns": ["\\bpython\\b", "\\bpip install\\b", "\\bvenv\\b"],
+      "skip": [],
+      "message": "Windows Python: `py` not `python`, `py -m pip` not `pip` (standing rules § Python Stack; py-pip-guard enforces on Bash)."
+    },
+    {
+      "name": "visual-claims-need-pixels",
+      "type": "guardrail",
+      "patterns": ["\\b(ui|dashboard|layout|screenshot|looks like|design|pricing page|competitor)\\b.*\\b(review|research|compare|audit|check)\\b", "\\b(review|research|compare|audit|check)\\b.*\\b(ui|dashboard|layout|design|pricing page|competitor)\\b"],
+      "skip": [],
+      "message": "R1/R2: visual or pricing claims require a Playwright render + screenshot read back into context; WebFetch text is never the primary source (standing rules § Research Methodology)."
+    },
+    {
+      "name": "scraper-skill",
+      "type": "skill",
+      "patterns": ["\\b(scrape|scraper|agenda|legistar|civicclerk|granicus|novusagenda|primegov|municode|onbase|civicplus|council meeting)\\b"],
+      "skip": [],
+      "message": "Load skills/scraper/SKILL.md — fingerprint the agenda platform before building (§ Municipal agenda platforms), walk ALL pages, and remember the networkidle exception for ASP.NET portals."
+    },
+    {
+      "name": "outbound-comms",
+      "type": "skill",
+      "patterns": ["\\b(draft|write|compose)\\b.*\\b(email|memo|reply|response to|letter)\\b"],
+      "skip": [],
+      "message": "Outbound writing rules: no em/en dashes, double space after periods, deliver in a fenced code block (standing rules § Communication Style → Outbound writing)."
+    },
+    {
+      "name": "civil-doc-review",
+      "type": "skill",
+      "patterns": ["\\b(plan set|plan-set|sheet index|submittal|spec section|consultant scope|utility conflict)\\b"],
+      "skip": [],
+      "message": "Load skills/civil-doc-review/SKILL.md — sheet index diff first, conflict matrix for multi-consultant corridors, spec+data-sheet citations for product findings."
+    }
+  ]
+}
