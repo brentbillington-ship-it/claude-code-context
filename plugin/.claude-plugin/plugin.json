@@ -1,9 +1,9 @@
 {
   "name": "ccc",
   "version": "0.1.1",
-  "description": "Brent Billington's Claude Code operating system: standing-rules guard hooks incl. the skill-router, cross-project agents, and house skills (smallest-honest-change, ccc-doctor, ccc-promote, pdf-extract, scraper, civil-doc-review). Assembled from the claude-code-context repo by tools/build-plugin.sh.",
+  "description": "Brent Billington's Claude Code operating system: standing-rules guard hooks incl. the skill-router, cross-project agents, and house skills (smallest-honest-change, ccc-doctor, ccc-promote, pdf-extract, scraper, civil-doc-review). Assembled from the BB-Harness repo by tools/build-plugin.sh.",
   "author": {
     "name": "Brent Billington",
-    "url": "https://github.com/brentbillington-ship-it/claude-code-context"
+    "url": "https://github.com/brentbillington-ship-it/BB-Harness"
   }
 }

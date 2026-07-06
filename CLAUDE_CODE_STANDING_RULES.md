@@ -966,12 +966,12 @@ When a session needs an agent for a common task (code review, research,
 data viz, doc writing, security scan, deploy verify, etc.), search in
 this order BEFORE drafting a new agent from scratch:
 
-1. **CCC core library** — `claude-code-context/playbook/agents/<name>.md`.
+1. **CCC core library** — `BB-Harness/playbook/agents/<name>.md`.
    14 cross-project reusable agents. Invoke as-is, OR read as a starting
    point and augment inline for task-specific needs (the augmentation
    does not need to be persisted unless the same augmentation recurs).
-2. **CCC engagement-specific** — `claude-code-context/agents/<name>.md`
-   and `claude-code-context/agents/<group>/<name>.md`. Includes
+2. **CCC engagement-specific** — `BB-Harness/agents/<name>.md`
+   and `BB-Harness/agents/<group>/<name>.md`. Includes
    `senior-product-review.md` (universal quality gate) and the
    `family-office-tracker/` bundle (gala-holdings engagement).
 3. **CCC project playbooks** — `AGENTS_*.md` at the CCC root. Currently
