@@ -1,9 +1,7 @@
 # Billing-Backend Routing — the ApiBackend / CodeBackend pattern
 
-Promoted 2026-07-06 from the MMR pipeline's `BACKEND_TOGGLE.md` (source of
-truth for the implementation; this doc is the reusable pattern). Apply to
-any pipeline that calls Claude and can run both interactively and
-automated.
+A reusable pattern for any pipeline that calls Claude and can run both
+interactively and automated.
 
 ## The pattern
 

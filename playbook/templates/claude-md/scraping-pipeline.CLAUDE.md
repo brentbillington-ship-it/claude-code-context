@@ -1,4 +1,4 @@
-# CLAUDE.md — Scraping Pipeline (Municipal Markets–style)
+# CLAUDE.md — Scraping Pipeline (multi-city municipal style)
 
 ## Build / Run
 
