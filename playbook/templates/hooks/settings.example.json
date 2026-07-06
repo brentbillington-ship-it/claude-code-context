@@ -25,6 +25,14 @@
       }
     ],
 
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          { "type": "command", "command": "$CCC/playbook/templates/hooks/skill-router-userpromptsubmit.sh" }
+        ]
+      }
+    ],
+
     "PreToolUse": [
       {
         "matcher": "Write|Edit|MultiEdit",

@@ -28,6 +28,9 @@ for f in playbook/templates/hooks/*.sh; do
 done
 chmod +x plugin/hooks/scripts/*.sh
 
+# The skill-router's rules file rides along with its script.
+cp playbook/templates/hooks/skill-rules.json plugin/hooks/scripts/
+
 # Sanity: every script hooks.json references must exist.
 missing=0
 while IFS= read -r s; do
