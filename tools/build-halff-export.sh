@@ -33,6 +33,8 @@ drop=(
   "agents/proposal-pricing-qa.md"
   "agents/proposal-scope-qa.md"
   "playbook/EXPORT"
+  "playbook/research"
+  "playbook/synthesis"
   "playbook/agents/client-deliverable-packager.md"
   "playbook/research/family-office-tooling.md"
   "playbook/research/freelancer.md"
@@ -158,8 +160,11 @@ def deploy_verify(s):
 rewrite("playbook/agents/deploy-verify.md", deploy_verify)
 
 # Cross-links and pairs-with lines pointing at dropped content: drop the line.
-LINE_DROP = re.compile(r"bw-client-deliverable|campaign-data-processor|client-deliverable-packager|family-office|AGENTS_(VISUAL_QA|COLOR_TRACE|DEPLOY_VERIFY|BROWSER_BOOTSTRAP)")
+LINE_DROP = re.compile(r"bw-client-deliverable|campaign-data-processor|campaign-tooling|client-deliverable-packager|family-office|AGENTS_(VISUAL_QA|COLOR_TRACE|DEPLOY_VERIFY|BROWSER_BOOTSTRAP)")
 for rel in ("playbook/agents/data-viz-reviewer.md",
+            "playbook/catalogs/PLUGIN_CATALOG.md",
+            "playbook/catalogs/MCP_CATALOG.md",
+            "playbook/research/tools.md",
             "playbook/agents/leaflet-map-debugger.md",
             "playbook/agents/maps-tooling-reviewer.md",
             "playbook/templates/claude-md/web-app.CLAUDE.md",
@@ -239,6 +244,10 @@ MAP = [
     (r"Brent stops Halff work", "Halff brand work tapers off"),
     (r"Halff Municipal-Markets pipeline retired", "Scraping pipelines retired"),
     (r"C:\\\\Users\\\\Brent\\\\Code\\\\BillingtonWorks[^ `\n]*", "the local code root"),
+    (r"\(Municipal Markets, campaign turnout\)", "(Municipal Markets, etc.)"),
+    (r"Batch geocoding US addresses \(campaign work\)", "Batch geocoding US addresses"),
+    (r"Essential for US campaign work\.", "Batch-friendly for bulk address work."),
+    (r"civil/Halff, client delivery, campaign tooling, scraping", "civil/Halff, client delivery, scraping"),
     (r"CC-Content", "the prior Halff-side rules repo"),
     # cleanup: article doubling introduced by phrase substitutions
     (r"\bthe the\b", "the"),
@@ -287,7 +296,7 @@ open(rd, "w", encoding="utf-8", newline="\n").write(s)
 PYEOF
 
 # --- 6. Denylist verify — the build FAILS if anything personal survives -----
-denylist='Billington Works|BillingtonWorks|BB-Notes|Vyzer|brentbillington-ship-it|family-office|bw-client|campaign-data|choochoo|CC-Content|Canvassing|Signs Map|AGENTS_VISUAL_QA|AGENTS_COLOR_TRACE|AGENTS_DEPLOY_VERIFY|AGENTS_BROWSER_BOOTSTRAP|the the '
+denylist='Billington Works|BillingtonWorks|BB-Notes|Vyzer|brentbillington-ship-it|family-office|bw-client|campaign-data|choochoo|CC-Content|Canvassing|Signs Map|AGENTS_VISUAL_QA|AGENTS_COLOR_TRACE|AGENTS_DEPLOY_VERIFY|AGENTS_BROWSER_BOOTSTRAP|the the |campaign|freelance'
 hits=$(grep -rInE "$denylist" "$out" --binary-files=without-match || true)
 if [[ -n "$hits" ]]; then
   echo "EXPORT FAILED — personal references survived the scrub:"
