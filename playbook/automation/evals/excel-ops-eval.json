@@ -1,0 +1,44 @@
+{
+  "skill": "excel-ops",
+  "description": "Binary eval assertions for the excel-ops.md skill",
+  "test_inputs": [
+    {
+      "prompt": "Create a new Excel workbook with a Summary tab and per-city tabs for Frisco, Carrollton, and Celina. Each city tab should have columns: Contract Name, Vendor, Amount, Date, Status. The Summary tab should pull totals from each city tab.",
+      "context": "This is for the Municipal Markets pipeline output. Use openpyxl. Follow Halff brand colors for headers."
+    },
+    {
+      "prompt": "The Excel writer is corrupting the file when writing more than 50 rows. The file opens in Excel with a repair warning. Diagnose the likely cause and fix.",
+      "context": "Using openpyxl to write data. The corruption started after adding XML post-processing to fix formatting. File size is ~200KB."
+    },
+    {
+      "prompt": "Add a chart to the Summary tab showing total contract value by city as a bar chart. Use Halff brand colors (Blue #1C355E, Seafoam #68949E, Teal #115E6B).",
+      "context": "Workbook already exists with Summary tab and city tabs containing dollar amounts in column C."
+    }
+  ],
+  "assertions": [
+    {
+      "id": "a1",
+      "question": "Does the output include concrete Python code using openpyxl (not xlsxwriter or pandas Excel output)?"
+    },
+    {
+      "id": "a2",
+      "question": "Does the code properly handle workbook creation or modification without overwriting existing data?"
+    },
+    {
+      "id": "a3",
+      "question": "Does the output address the specific task (multi-tab structure, corruption diagnosis, or chart creation) rather than giving generic Excel advice?"
+    },
+    {
+      "id": "a4",
+      "question": "Does the code include proper cell formatting (number formats for currency, date formats) where relevant?"
+    },
+    {
+      "id": "a5",
+      "question": "If the task involves Halff brand colors, does the output use the correct hex values or reference them explicitly?"
+    },
+    {
+      "id": "a6",
+      "question": "Does the code save the workbook properly with wb.save() and avoid the common pitfall of writing to a file that is currently open?"
+    }
+  ]
+}

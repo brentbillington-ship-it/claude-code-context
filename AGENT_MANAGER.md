@@ -156,6 +156,10 @@ When invoked with `audit`, the manager:
 4. Checks retirement triggers — flags any that are met.
 5. Reports findings. Takes no action without explicit "go."
 
+`tools/ccc-doctor.sh` runs the registry↔filesystem half of this audit
+mechanically (orphans, missing files, dead links); use it first, then do
+the judgment steps (dormancy, retirement triggers) by hand.
+
 ---
 
 ## Changelog
