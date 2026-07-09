@@ -327,6 +327,17 @@ where possible, stored in a secret store — never a broad personal PAT.
 
 **Never commit destructive changes** (force push, delete branch, rewrite history) without explicit approval.
 
+### Scheduled workflows can be silently never-scheduled
+
+Two BB-Notes cron workflows sat "active" on main for 13+ hours with ZERO
+runs ever (one was a */30 cron). Zero-run history is an enablement problem,
+not cron lag — workflow files that land via API commits (squash-merge
+through an integration token) are the known trigger. After shipping any
+cron workflow: verify a nonzero run count within one interval; if zero,
+have Brent open Actions → the workflow → "Run workflow" (a human manual
+dispatch both tests the pipeline and wakes the scheduler). Integration
+tokens cannot dispatch (403).
+
 ---
 
 ## Sandbox / Network
@@ -635,6 +646,28 @@ the coord from the URL after the site resolves the address. This is
 the canonical pattern for the "compare stored coord vs. real location"
 loop on this account.
 
+
+### D9. A regression suite that isn't green on main is not a regression suite
+
+Dogfood/test suites rot silently across substrate swaps (BB-Notes' CM5→CM6
+swap left 6 scripts failing on main unnoticed). Any change that replaces a
+UI substrate must run the FULL existing suite in the same session and
+modernize or explicitly retire each failing script.
+
+### D10. "Display strips a prefix" is a data-loss bug class
+
+If a view strips or rewrites any prefix/suffix for display or editing
+(frontmatter, headers, BOM, wrappers), every save path must provably
+re-attach it — and the test suite needs a round-trip fixture (open → edit →
+save → byte-compare the untouched region). BB-Notes' editor silently
+deleted frontmatter blocks on first save for weeks this way.
+
+### D11. Before deleting a "redundant" feature, list what ONLY it does
+
+Enumerate the surface's capabilities and diff against the survivors.
+BB-Notes' "redundant" split-preview pane was the only surface rendering
+pasted images — blind removal would have shipped a regression; instead the
+removal was gated on porting image rendering first.
 ---
 
 ## Senior Review Discipline — Non-Negotiable
